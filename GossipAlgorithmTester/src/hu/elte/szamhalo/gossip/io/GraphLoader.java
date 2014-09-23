@@ -5,7 +5,6 @@ import hu.elte.szamhalo.gossip.vo.Node;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,7 +18,7 @@ public class GraphLoader {
 
 	        while (line != null) {
 	            if(!line.contains("-")){
-	            	nodeList.add(new Node(line, new ArrayList<Node>(), null, null));
+	            	nodeList.add(new Node(line, new TreeSet<Node>(), null, null));
 	            }else{
 	            	String node1ID = line.split("-")[0];
 	            	String node2ID = line.split("-")[1];

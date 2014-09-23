@@ -5,16 +5,18 @@ import hu.elte.szamhalo.gossip.vo.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class GraphGenerator {
 	
 	private static Random rand = new Random();
 	
-	public static List<Node> getGraph(int numberOfNodes, int density){
+	private static List<Node> getGraph(int numberOfNodes, int density, int startIndex){
 		List<Node> graph = new ArrayList<Node>();
 		List<Node> connectedGraph = new ArrayList<Node>();
 		for(int i = 0; i < numberOfNodes; i++){
-			Node node = new Node("n" + i, new ArrayList<Node>(), null, null);
+			Node node = new Node("n" + String.format("%03d", startIndex++), new TreeSet<Node>(), null, null);
 			graph.add(node);
 		}
 		int numberOfMinEdge = numberOfNodes - 1;
@@ -52,18 +54,21 @@ public class GraphGenerator {
 		node2.getNeighbours().add(node1);
 	}
 	
-	public static List<Node> getComplexGraph(List<Integer> numberOfNodesList, List<Integer> density){
+	public static SortedSet<Node> getComplexGraph(Integer[] numberOfNodesList, Integer[] density){
 		List<Node> complexGraph = new ArrayList<Node>(); 
-		for(int i = 0; i < numberOfNodesList.size(); i++){
-			List<Node> graphPart = getGraph(numberOfNodesList.get(i),density.get(i));
+		int startIndex = 1;
+		for(int i = 0; i < numberOfNodesList.length; i++){
+			List<Node> graphPart = getGraph(numberOfNodesList[i],density[i],startIndex);
 			if(complexGraph.size() > 0){
 				Node connectingNode = complexGraph.get(rand.nextInt(complexGraph.size()));
 				Node nextNode = graphPart.get(rand.nextInt(graphPart.size()));
 				connect(connectingNode, nextNode);
 			}
 			complexGraph.addAll(graphPart);
+			startIndex += graphPart.size();
+			System.out.println(complexGraph.size());
 		}
-		return complexGraph;
+		return new TreeSet<Node>(complexGraph);
 	}
 	
 }

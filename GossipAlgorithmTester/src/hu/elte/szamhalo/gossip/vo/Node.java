@@ -1,6 +1,6 @@
 package hu.elte.szamhalo.gossip.vo;
 
-import java.util.List;
+import java.util.SortedSet;
 
 public class Node implements Comparable<Node>{
 	/**
@@ -10,7 +10,7 @@ public class Node implements Comparable<Node>{
 	/**
 	 * list of neighbours
 	 */
-	private List<Node> neighbours;
+	private SortedSet<Node> neighbours;
 	/**
 	 * currently active algorithm 
 	 */
@@ -18,10 +18,10 @@ public class Node implements Comparable<Node>{
 	/**
 	 * list of Rumors that are known to the node
 	 */
-	private List<Rumor> knownRumors;
+	private SortedSet<Rumor> knownRumors;
 	
-	public Node(String nodeID, List<Node> neighbours,
-			IChoosingAlgorithm activeAlgorithm, List<Rumor> knownRumors) {
+	public Node(String nodeID, SortedSet<Node> neighbours,
+			IChoosingAlgorithm activeAlgorithm, SortedSet<Rumor> knownRumors) {
 		super();
 		this.nodeID = nodeID;
 		this.neighbours = neighbours;
@@ -47,13 +47,13 @@ public class Node implements Comparable<Node>{
 	/**
 	 * @return the neighbours
 	 */
-	public List<Node> getNeighbours() {
+	public SortedSet<Node> getNeighbours() {
 		return neighbours;
 	}
 	/**
 	 * @param neighbours the neighbours to set
 	 */
-	public void setNeighbours(List<Node> neighbours) {
+	public void setNeighbours(SortedSet<Node> neighbours) {
 		this.neighbours = neighbours;
 	}
 	/**
@@ -71,13 +71,13 @@ public class Node implements Comparable<Node>{
 	/**
 	 * @return the knownRumors
 	 */
-	public List<Rumor> getKnownRumors() {
+	public SortedSet<Rumor> getKnownRumors() {
 		return knownRumors;
 	}
 	/**
 	 * @param knownRumors the knownRumors to set
 	 */
-	public void setKnownRumors(List<Rumor> knownRumors) {
+	public void setKnownRumors(SortedSet<Rumor> knownRumors) {
 		this.knownRumors = knownRumors;
 	}
 

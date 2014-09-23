@@ -1,57 +1,58 @@
 package hu.elte.szamhalo.gossip;
 
-import hu.elte.szamhalo.gossip.io.GraphLoader;
+import hu.elte.szamhalo.gossip.io.GraphGenerator;
 import hu.elte.szamhalo.gossip.vo.Node;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class Tester {
-	private static List<Node> graph = new ArrayList<Node>();
+	private static SortedSet<Node> graph = new TreeSet<Node>();
 	
 	public static void main(String[] args) throws IOException {
 		
 		
 		
 
-    	for (Iterator<Node> it = GraphLoader.getGraph("input/input1.grph").iterator(); it.hasNext(); ) {
-    		Node node = it.next();
-    		System.out.println(node.getNodeID() +" / " + node.getNeighbours().size());
-    		
-    	}
+//    	for (Iterator<Node> it = GraphLoader.getGraph("input/input1.grph").iterator(); it.hasNext(); ) {
+//    		Node node = it.next();
+//    		System.out.println(node.getNodeID() +" / " + node.getNeighbours().size());
+//    		
+//    	}
 		
-//		List<Node> graph2;
-//		graph2 = GraphGenerator.getGraph(5, 0);
-//		for (Node node : graph2) {
-//			System.out.print(node.getNeighbours().size());
-//		}
-//		System.out.println(",");
-//		graph2 = GraphGenerator.getGraph(5, 100);
-//		for (Node node : graph2) {
-//			System.out.print(node.getNeighbours().size());
-//		}
-//		System.out.println(",");
-//		graph2 = GraphGenerator.getGraph(5, 50);
-//		for (Node node : graph2) {
-//			System.out.print(node.getNeighbours().size());
-//		}
-//		System.out.println(",");
-//		graph2 = GraphGenerator.getGraph(5, 5);
-//		for (Node node : graph2) {
-//			System.out.print(node.getNeighbours().size());
-//		}
-//		System.out.println(",");
-//		graph2 = GraphGenerator.getGraph(5, 2);
-//		for (Node node : graph2) {
-//			System.out.print(node.getNeighbours().size());
-//		}
-//		System.out.println(",");
-//		graph2 = GraphGenerator.getGraph(5, 1);
-//		for (Node node : graph2) {
-//			System.out.print(node.getNeighbours().size());
-//		}
-//		System.out.println(",");
+		SortedSet<Node> graph2;
+		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5},new Integer[]{ 0});
+		for (Node node : graph2) {
+			System.out.print(node.getNeighbours().size());
+		}
+		System.out.println(",");
+		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{100});
+		for (Node node : graph2) {
+			System.out.print(node.getNeighbours().size());
+		}
+		System.out.println(",");
+		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{50});
+		for (Node node : graph2) {
+			System.out.print(node.getNeighbours().size());
+		}
+		System.out.println(",");
+		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{5});
+		for (Node node : graph2) {
+			System.out.print(node.getNeighbours().size());
+		}
+		System.out.println(",");
+		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{2});
+		for (Node node : graph2) {
+			System.out.print(node.getNeighbours().size());
+		}
+		System.out.println(",");
+		graph2 = GraphGenerator.getComplexGraph(new Integer[]{4,4}, new Integer[]{30,70});
+		for (Node node : graph2) {
+			System.out.println(node.getNodeID() + ":"+node.getNeighbours().size());
+		}
+		System.out.println(",");
 		
 		/*
 		
