@@ -1,7 +1,6 @@
 package hu.elte.szamhalo.gossip;
 
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import hu.elte.szamhalo.gossip.vo.Node;
