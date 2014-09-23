@@ -11,6 +11,13 @@ import java.util.TreeSet;
 
 public class GraphLoader {
 	
+	/**
+	 * Generates a set of Node based on an input graph file<br>
+	 * First the nodes are generated based on names, after that the connections are builded
+	 * @param fileName if the file contains connection with non existing nodes, that will be awarded with  a nullPointerE.
+	 * @return
+	 * @throws IOException
+	 */
 	public static SortedSet<Node> getGraph(String fileName) throws IOException{
 		SortedSet<Node> nodeList = new TreeSet<Node>();
 	    try(BufferedReader br = new BufferedReader(new FileReader(fileName));) {
