@@ -1,107 +1,49 @@
 package hu.elte.szamhalo.gossip;
 
+import hu.elte.szamhalo.gossip.gui.GraphView;
 import hu.elte.szamhalo.gossip.io.GraphGenerator;
+import hu.elte.szamhalo.gossip.util.RumorUtil;
 import hu.elte.szamhalo.gossip.vo.Node;
+import hu.elte.szamhalo.gossip.vo.Rumor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 public class Tester {
 	private static SortedSet<Node> graph = new TreeSet<Node>();
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		
+		graph = GraphGenerator.getComplexGraph(new Integer[]{4,2,6,4}, new Integer[]{50,70,50,70});
+        
+        Rumor r = RumorUtil.setRandomRumor(graph, "rumor1");
+        
+        final GraphView graphView = new GraphView(graph);
 		
-		
-
-//    	for (Iterator<Node> it = GraphLoader.getGraph("input/input1.grph").iterator(); it.hasNext(); ) {
-//    		Node node = it.next();
-//    		System.out.println(node.getNodeID() +" / " + node.getNeighbours().size());
-//    		
-//    	}
-		
-		SortedSet<Node> graph2;
-		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5},new Integer[]{ 0});
-		for (Node node : graph2) {
-			System.out.print(node.getNeighbours().size());
-		}
-		System.out.println(",");
-		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{100});
-		for (Node node : graph2) {
-			System.out.print(node.getNeighbours().size());
-		}
-		System.out.println(",");
-		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{50});
-		for (Node node : graph2) {
-			System.out.print(node.getNeighbours().size());
-		}
-		System.out.println(",");
-		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{5});
-		for (Node node : graph2) {
-			System.out.print(node.getNeighbours().size());
-		}
-		System.out.println(",");
-		graph2 = GraphGenerator.getComplexGraph(new Integer[]{5}, new Integer[]{2});
-		for (Node node : graph2) {
-			System.out.print(node.getNeighbours().size());
-		}
-		System.out.println(",");
-		graph2 = GraphGenerator.getComplexGraph(new Integer[]{4,4}, new Integer[]{30,70});
-		for (Node node : graph2) {
-			System.out.println(node.getNodeID() + ":"+node.getNeighbours().size());
-		}
-		System.out.println(",");
-		
-		/*
-		
-		List<Rumor> rumors = new ArrayList<Rumor>();
-		List<Rumor> erumors = new ArrayList<Rumor>();
-		Rumor r = new Rumor();
-		r.setId("r1");
-		rumors.add(r);
-		Node sourceNode = new Node("sn",new ArrayList<Node>(), null, rumors);
-		r.setSourceNode(sourceNode);
-		
-		
-		Node node1 = new Node("n1",new ArrayList<Node>(), null, rumors);
-		Node node2 = new Node("n2",new ArrayList<Node>(), null, rumors);
-		Node node3 = new Node("n3",new ArrayList<Node>(), null, rumors);
-		Node node4 = new Node("n4",new ArrayList<Node>(), null, rumors);
-		Node node5 = new Node("n5",new ArrayList<Node>(), null, rumors);
-		Node node6 = new Node("n6",new ArrayList<Node>(), null, erumors);
-		
-		graph.add(sourceNode);
-		graph.add(node1);
-		graph.add(node2);
-		graph.add(node3);
-		graph.add(node4);
-		graph.add(node5);
-		graph.add(node6);
-		
-		sourceNode.getNeighbours().add(node1);
-		sourceNode.getNeighbours().add(node2);
-		
-		node1.getNeighbours().add(sourceNode);
-		node2.getNeighbours().add(sourceNode);
-		
-		node1.getNeighbours().add(node3);
-		node1.getNeighbours().add(node4);
-		
-		node3.getNeighbours().add(node1);
-		node4.getNeighbours().add(node1);
-		
-		node2.getNeighbours().add(node5);
-		node5.getNeighbours().add(node2);
-		
-		node5.getNeighbours().add(node6);
-		node6.getNeighbours().add(node5);
-		
-		System.out.println(RumorVerifier.verify(graph, r, 0));
-		System.out.println(RumorVerifier.verify(graph, r, 1));
-		System.out.println(RumorVerifier.verify(graph, r, 2));
-		System.out.println(RumorVerifier.verify(graph, r, 3));
-		*/
+        Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+        for (int i = 1; i < 10; i++) {
+        	List<String> thisroundnodes = new ArrayList<String>();
+        	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
+        		Node node = it.next();
+        		if(RumorUtil.knowsThatRumor(node, "rumor1") && !thisroundnodes.contains(node.getNodeID())){
+        			for (Iterator<Node> it2 = node.getNeighbours().iterator(); it2.hasNext(); ) {
+        				Node neighbour = it2.next();
+        				if(!RumorUtil.knowsThatRumor(neighbour, "rumor1")){{
+        					neighbour.getKnownRumors().add(node.getKnownRumors().first());
+        					thisroundnodes.add(neighbour.getNodeID());
+        				}
+        		}}}
+        	}
+        	graphView.repaint();
+        	System.out.println(RumorVerifier.verify(r, 3));
+        	System.out.println("sleep1");
+            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+            System.out.println("sleep2");
+        }
 	}
 }

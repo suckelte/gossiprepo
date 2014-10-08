@@ -1,6 +1,7 @@
 package hu.elte.szamhalo.gossip.vo;
 
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class Node implements Comparable<Node>{
 	/**
@@ -20,13 +21,14 @@ public class Node implements Comparable<Node>{
 	 */
 	private SortedSet<Rumor> knownRumors;
 	
+	
 	public Node(String nodeID, SortedSet<Node> neighbours,
 			IChoosingAlgorithm activeAlgorithm, SortedSet<Rumor> knownRumors) {
 		super();
 		this.nodeID = nodeID;
 		this.neighbours = neighbours;
 		this.activeAlgorithm = activeAlgorithm;
-		this.knownRumors = knownRumors;
+		this.knownRumors = knownRumors = new TreeSet<Rumor>();
 	}
 	/*
 	 * {getter/setter list}
@@ -91,7 +93,7 @@ public class Node implements Comparable<Node>{
 
 	@Override
 	public int compareTo(Node o) {
-		if(o == null){
+		if(o == null || o.getNodeID() == null){
 			return 1;
 		}
 		if(!o.getNodeID().equals(this.getNodeID())){
@@ -99,6 +101,5 @@ public class Node implements Comparable<Node>{
 		}
 		return 0;
 	}
-	
-	
+
 }

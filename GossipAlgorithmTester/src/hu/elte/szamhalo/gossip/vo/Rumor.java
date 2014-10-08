@@ -1,6 +1,6 @@
 package hu.elte.szamhalo.gossip.vo;
 
-public class Rumor {
+public class Rumor  implements Comparable<Rumor>{
 	/**
 	 * id of rumor
 	 */
@@ -32,5 +32,16 @@ public class Rumor {
 	 */
 	public void setSourceNode(Node sourceNode) {
 		this.sourceNode = sourceNode;
+	}
+	
+	@Override
+	public int compareTo(Rumor o) {
+		if(o == null || o.getId() == null){
+			return 1;
+		}
+		if(!o.getId().equals(this.getId())){
+			return 1;
+		}
+		return 0;
 	}
 }

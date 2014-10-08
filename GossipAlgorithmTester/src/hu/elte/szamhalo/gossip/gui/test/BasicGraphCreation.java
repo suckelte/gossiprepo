@@ -1,4 +1,4 @@
-package hu.elte.szamhalo.gossip.gui;
+package hu.elte.szamhalo.gossip.gui.test;
 
 
 import edu.uci.ics.jung.graph.Graph;

@@ -1,4 +1,4 @@
-package hu.elte.szamhalo.gossip.gui;
+package hu.elte.szamhalo.gossip.gui.test;
 
 /**
  * $Id: GraphEditor.java,v 1.3 2014/02/08 14:05:58 gaudenz Exp $
@@ -10,14 +10,12 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 import org.w3c.dom.Document;
 
-import com.mxgraph.examples.swing.editor.BasicGraphEditor;
-import com.mxgraph.examples.swing.editor.EditorMenuBar;
-import com.mxgraph.examples.swing.editor.EditorPalette;
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
