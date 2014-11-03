@@ -26,7 +26,7 @@ public class RumorVerifier {
 				}
 				for(Node neighbour : node.getNeighbours()){
 					if(!kLocalMap.containsKey(neighbour)){
-						if(neighbour.getKnownRumors().contains(rumor)){
+						if(neighbour.getRumor() != null){
 							kLocalMap.put(neighbour, distanceFromSource);
 						}else{
 							return neighbour;

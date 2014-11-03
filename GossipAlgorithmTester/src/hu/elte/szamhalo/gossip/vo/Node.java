@@ -1,7 +1,6 @@
 package hu.elte.szamhalo.gossip.vo;
 
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class Node implements Comparable<Node>{
 	/**
@@ -19,16 +18,16 @@ public class Node implements Comparable<Node>{
 	/**
 	 * list of Rumors that are known to the node
 	 */
-	private SortedSet<Rumor> knownRumors;
+	private Rumor rumor;
 	
 	
 	public Node(String nodeID, SortedSet<Node> neighbours,
-			IChoosingAlgorithm activeAlgorithm, SortedSet<Rumor> knownRumors) {
+			IChoosingAlgorithm activeAlgorithm, Rumor rumor) {
 		super();
 		this.nodeID = nodeID;
 		this.neighbours = neighbours;
 		this.activeAlgorithm = activeAlgorithm;
-		this.knownRumors = knownRumors = new TreeSet<Rumor>();
+		this.rumor = rumor;
 	}
 	/*
 	 * {getter/setter list}
@@ -70,17 +69,20 @@ public class Node implements Comparable<Node>{
 	public void setActiveAlgorithm(IChoosingAlgorithm activeAlgorithm) {
 		this.activeAlgorithm = activeAlgorithm;
 	}
+	
+
 	/**
-	 * @return the knownRumors
+	 * @return the rumor
 	 */
-	public SortedSet<Rumor> getKnownRumors() {
-		return knownRumors;
+	public Rumor getRumor() {
+		return rumor;
 	}
+
 	/**
-	 * @param knownRumors the knownRumors to set
+	 * @param rumor the rumor to set
 	 */
-	public void setKnownRumors(SortedSet<Rumor> knownRumors) {
-		this.knownRumors = knownRumors;
+	public void setRumor(Rumor rumor) {
+		this.rumor = rumor;
 	}
 
 	/* (non-Javadoc)

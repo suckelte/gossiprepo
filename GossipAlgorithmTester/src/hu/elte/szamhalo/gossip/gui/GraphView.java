@@ -1,11 +1,9 @@
 package hu.elte.szamhalo.gossip.gui;
 
-import hu.elte.szamhalo.gossip.util.RumorUtil;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
@@ -15,11 +13,9 @@ import java.awt.geom.Ellipse2D;
 import java.util.Iterator;
 import java.util.SortedSet;
 
-import javax.swing.JFrame;
-
 import org.apache.commons.collections15.Transformer;
 
-import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph;
@@ -34,20 +30,16 @@ public class GraphView {
 	 private Graph<String, String> graphView;
 	 Rumor r = null;
 	 private SortedSet<Node> graphModel;
-	 private JFrame frame;
 	 private VisualizationViewer<String, String> visualizationViewer;
+	 private int width;
+	 private int height;
 	 
-	public GraphView(SortedSet<Node> graphModel) {
+	public GraphView(SortedSet<Node> graphModel, int width, int height) {
 		super();
+		this.width = width;
+		this.height = height;
 		this.graphView = initGraphViewObject(graphModel);
 		visualizationViewer = initView();
-		this.frame = new JFrame("Gossip Algorithm Tester");
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        BorderLayout borderLayout = new BorderLayout();
-        this.frame.setLayout(borderLayout);
-        this.frame.getContentPane().add(visualizationViewer, BorderLayout.CENTER);
-        this.frame.pack();
-        this.frame.setVisible(true);
 	}
 	 
 	private Graph<String, String> initGraphViewObject(SortedSet<Node> graphModel){
@@ -68,11 +60,11 @@ public class GraphView {
 	
 	private VisualizationViewer<String, String> initView(){
 		 // Layout<V, E>, VisualizationComponent<V,E>
-//      Layout<Integer, String> layout = new CircleLayout(sgv.g);
-      Layout<String, String> layout = new ISOMLayout<String, String>(graphView);
-      layout.setSize(new Dimension(900,900));
+      Layout<String, String> layout = new CircleLayout<String, String>(graphView);
+//      Layout<String, String> layout = new ISOMLayout<String, String>(graphView);
+      layout.setSize(new Dimension(width,height));
       final VisualizationViewer<String,String> vv = new VisualizationViewer<String,String>(layout);
-      vv.setPreferredSize(new Dimension(900,900));    
+      vv.setPreferredSize(new Dimension(width,height));    
       
       DefaultModalGraphMouse<String, String> graphMouse = new DefaultModalGraphMouse<String, String>();
       graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
@@ -84,8 +76,12 @@ public class GraphView {
           	for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {
           		Node node = it.next();
           		if(node.getNodeID().equals(nodeId)){
-          			if(RumorUtil.knowsThatRumor(node, "rumor1")){
-          				return Color.GREEN;
+          			if(node.getRumor() != null){
+          				if(!node.getActiveAlgorithm().isActive()){
+          					return Color.YELLOW;
+          				}else{
+          					return Color.GREEN;
+          				}
           			}else{
           				return Color.RED;
           			}
@@ -119,6 +115,9 @@ public class GraphView {
 	
 	public void repaint(){
 		visualizationViewer.repaint();
-    	frame.repaint();
+	}
+	
+	public VisualizationViewer<String,String> getVisualizationViewer(){
+		return visualizationViewer;
 	}
 }

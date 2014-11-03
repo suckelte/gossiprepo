@@ -24,7 +24,8 @@ public class GraphGenerator {
 		List<Node> graph = new ArrayList<Node>();
 		List<Node> connectedGraph = new ArrayList<Node>();
 		for(int i = 0; i < numberOfNodes; i++){
-			Node node = new Node("n" + String.format("%02d", startIndex++), new TreeSet<Node>(), null, null);
+			Node node = new Node("n" + String.format("%02d", startIndex++), new TreeSet<Node>(),null, null);
+			node.setActiveAlgorithm(null);
 			graph.add(node);
 		}
 		int numberOfMinEdge = numberOfNodes - 1;

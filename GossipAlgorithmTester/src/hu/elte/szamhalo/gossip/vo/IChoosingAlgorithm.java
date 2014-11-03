@@ -1,5 +1,7 @@
 package hu.elte.szamhalo.gossip.vo;
 
+import java.util.List;
+
 public interface IChoosingAlgorithm {
 	/**
 	 * makes a step in spreading the rumor
@@ -11,4 +13,9 @@ public interface IChoosingAlgorithm {
 	 */
 	public boolean isActive();
 	
+	/**
+	 * the list of nodes that it already told
+	 * @return
+	 */
+	public List<String> getAlreadyTold();
 }
