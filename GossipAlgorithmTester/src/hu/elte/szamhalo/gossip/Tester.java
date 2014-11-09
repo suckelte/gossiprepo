@@ -1,6 +1,7 @@
 package hu.elte.szamhalo.gossip;
 
 import hu.elte.szamhalo.gossip.gui.GraphView;
+import hu.elte.szamhalo.gossip.gui.MainMenuFrame;
 import hu.elte.szamhalo.gossip.gui.MultiGraphPanel;
 import hu.elte.szamhalo.gossip.io.GraphGenerator;
 import hu.elte.szamhalo.gossip.util.GraphUtil;
@@ -34,10 +35,9 @@ public class Tester {
         final GraphView graphView1 = new GraphView(graph,900,900);
         final GraphView graphView2 = new GraphView(graph2,900,900);
 		
-//        new SingleGraphPanel(graphView1);
-        new MultiGraphPanel(graphView1,graphView2);
+        new MainMenuFrame(graphView1,graphView2);
         
-        Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+        Thread.sleep(TimeUnit.SECONDS.toMillis(5000));
         for (int i = 1; i < 10; i++) {
         	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
         		Node node = it.next();

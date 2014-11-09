@@ -1,10 +1,20 @@
 package hu.elte.szamhalo.gossip.gui;
 
-import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-public class SingleGraphPanel extends JFrame {
+public class SingleGraphPanel extends JFrame implements MouseListener{
 	
     
     /**
@@ -12,13 +22,133 @@ public class SingleGraphPanel extends JFrame {
 	 */
 	private static final long serialVersionUID = 1454737796901375663L;
 
+	private int nextStep = 0;
+
+	private GraphView graphView;
+	
+	
+	
 	public SingleGraphPanel(GraphView graphView){
-    	this.setTitle("Gossip Algorithm Tester");
+    	this.setTitle("Gossip algoritmus tesztelõ program");
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        BorderLayout borderLayout = new BorderLayout();
-        this.setLayout(borderLayout);
-        this.getContentPane().add(graphView.getVisualizationViewer(), BorderLayout.CENTER);
-        this.pack();
+    	this.graphView = graphView;
+    	FlowLayout flowLayout = new FlowLayout();
+        this.setLayout(flowLayout);
+        this.getContentPane().add(graphView.getVisualizationViewer());
+        this.getContentPane().add(new ControlPanel(this,true));
+        this.setSize(1000,1000);
         this.setVisible(true);
+    
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Gráf 1");
+        
+        JMenuItem newNodeMenu = new JMenuItem("Új csomópont");
+        menu.add(newNodeMenu);
+        newNodeMenu.addMouseListener(this);
+        JMenuItem deleteNodeMenu = new JMenuItem("Csomópont törlés");
+        menu.add(deleteNodeMenu);
+        deleteNodeMenu.addMouseListener(this);
+        JMenuItem newEdgeMenu = new JMenuItem("Új él");
+        menu.add(newEdgeMenu);
+        newEdgeMenu.addMouseListener(this);
+        JMenuItem deleteEdgeMenu = new JMenuItem("Él törlés");
+        menu.add(deleteEdgeMenu);
+        deleteEdgeMenu.addMouseListener(this);
+        menuBar.add(menu);
+
+        this.setJMenuBar(menuBar);
     }
+	
+	public void setNextstep(int nextStep){
+		this.nextStep = nextStep;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+	
+	
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+
+	@Override
+	public void mouseExited(MouseEvent e) {}
+
+	@Override
+	public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if(((JMenuItem)e.getSource()).getText().equals("Új csomópont")){
+		    JTextField xField = new JTextField(5);
+		    JTextField yField = new JTextField(5);
+		      
+			JPanel myPanel = new JPanel();
+		      myPanel.add(new JLabel("Új csomópont:"));
+		      myPanel.add(xField);
+		      myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+		      myPanel.add(new JLabel("Szomszéd csomópont:"));
+		      myPanel.add(yField);
+
+		      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+		               "Új csomópont", JOptionPane.OK_CANCEL_OPTION);
+		      
+		      if (result == JOptionPane.OK_OPTION) {
+		    	  graphView.addNode(xField.getText(), yField.getText());
+		    	  graphView.repaint();
+		    	  graphView.getVisualizationViewer().repaint();
+		      }
+		}else if (((JMenuItem)e.getSource()).getText().equals("Csomópont törlés")){
+			JTextField xField = new JTextField(5);
+		      
+			JPanel myPanel = new JPanel();
+		      myPanel.add(new JLabel("Törlendõ csomópont:"));
+		      myPanel.add(xField);
+
+		      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+		               "Csomópont törlés", JOptionPane.OK_CANCEL_OPTION);
+		      
+		      if (result == JOptionPane.OK_OPTION) {
+		    	  graphView.removeNode(xField.getText());
+		    	  graphView.repaint();
+		    	  graphView.getVisualizationViewer().repaint();
+		      }
+		}else if (((JMenuItem)e.getSource()).getText().equals("Új él")){
+			JTextField xField = new JTextField(5);
+		    JTextField yField = new JTextField(5);
+		      
+			JPanel myPanel = new JPanel();
+		      myPanel.add(new JLabel("Elsõ csomópont:"));
+		      myPanel.add(xField);
+		      myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+		      myPanel.add(new JLabel("Második csomópont:"));
+		      myPanel.add(yField);
+
+		      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+		               "Új él", JOptionPane.OK_CANCEL_OPTION);
+		      
+		      if (result == JOptionPane.OK_OPTION) {
+		    	  graphView.addEdge(xField.getText(), yField.getText());
+		    	  graphView.repaint();
+		    	  graphView.getVisualizationViewer().repaint();
+		      }
+		}else if (((JMenuItem)e.getSource()).getText().equals("Él törlés")){
+			JTextField xField = new JTextField(5);
+		      
+			JPanel myPanel = new JPanel();
+		      myPanel.add(new JLabel("Törlendõ él:"));
+		      myPanel.add(xField);
+
+		      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+		               "Él törlés", JOptionPane.OK_CANCEL_OPTION);
+		      
+		      if (result == JOptionPane.OK_OPTION) {
+		    	  graphView.removeEdge(xField.getText());
+		    	  graphView.repaint();
+		    	  graphView.getVisualizationViewer().repaint();
+		      }
+		}
+	}
+
+
 }

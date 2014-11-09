@@ -10,8 +10,10 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -119,5 +121,34 @@ public class GraphView {
 	
 	public VisualizationViewer<String,String> getVisualizationViewer(){
 		return visualizationViewer;
+	}
+	
+	public void addNode(String nodeId,String neighbourNodeId){
+		for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {
+    		Node node = it.next();
+    		System.out.println(node.getNodeID());
+    		if(node.getNodeID().equals(neighbourNodeId)){
+    			graphView.addVertex(nodeId);
+    			graphView.addEdge(nodeId + "-" + neighbourNodeId, nodeId, neighbourNodeId);
+    			TreeSet<Node> neighbours = new TreeSet<Node>();
+    			neighbours.add(node);
+				Node newNode = new Node(nodeId,neighbours,null, null);
+				node.getNeighbours().add(newNode);
+    			newNode.setActiveAlgorithm(node.getActiveAlgorithm());
+    			return;
+    		}
+		}
+	}
+	
+	public void removeNode(String nodeId){
+		graphView.removeVertex(nodeId);
+	}
+	
+	public void addEdge(String nodeId,String neighbourNodeId){
+		graphView.addEdge(nodeId + "-" + neighbourNodeId, nodeId, neighbourNodeId);
+	}
+	
+	public void removeEdge(String edgeId){
+		graphView.removeEdge(edgeId);
 	}
 }
