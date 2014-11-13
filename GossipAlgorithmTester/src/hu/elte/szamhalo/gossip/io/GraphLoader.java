@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.json.JSONArray;
+
 public class GraphLoader {
 	
 	/**
@@ -43,6 +45,46 @@ public class GraphLoader {
 	            	connect(node1, node2);
 	            }
 	            line = br.readLine();
+	        }
+	    }
+		return nodeList;
+	}
+	
+
+	public static SortedSet<Node> getJSONGraph(String fileName) throws IOException{
+		SortedSet<Node> nodeList = new TreeSet<Node>();
+	    try(BufferedReader br = new BufferedReader(new FileReader(fileName));) {
+	        String line = br.readLine();
+
+	        final JSONArray input = new JSONArray(line);
+	    
+	        for (int i = 0; i < input.length(); i++) {
+	            JSONArray nodePair = input.getJSONArray(i);
+	
+	            for (int j = 0; j <= 1; j++) {
+	            	Node firstAdded = null;
+	            	Node secondAdded = null;
+	            	for (Iterator<Node> it = nodeList.iterator(); it.hasNext(); ) {
+	            		Node node = it.next();
+	            		if(node.getNodeID().equals(nodePair.get(0))){
+	            			firstAdded = node;
+	            		}
+	            		if(node.getNodeID().equals(nodePair.get(1))){
+	            			secondAdded = node;
+	            		}
+	            	}
+	            	if(firstAdded == null){
+		            	final Node node1 = new Node("n" + nodePair.get(0), new TreeSet<Node>(), null, null);
+		            	firstAdded = node1;
+						nodeList.add(node1);
+	            	}
+	            	if(secondAdded == null){
+	            		final Node node2 = new Node("n" + nodePair.get(1), new TreeSet<Node>(), null, null);
+	            		secondAdded = node2;
+						nodeList.add(node2);
+	            	}
+	            	connect(firstAdded, secondAdded);
+	            }
 	        }
 	    }
 		return nodeList;

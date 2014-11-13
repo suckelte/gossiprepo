@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/jung-visualization-2.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/collections-generic-4.01.jar"/>
 	<classpathentry kind="lib" path="lib/jung-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/json-20140107.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

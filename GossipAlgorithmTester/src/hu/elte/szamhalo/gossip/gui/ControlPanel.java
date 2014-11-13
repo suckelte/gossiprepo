@@ -27,7 +27,7 @@ public class ControlPanel extends JPanel implements MouseListener{
     	this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		this.setLayout(gridBagLayout);
-		this.setMaximumSize(new Dimension(300,50));
+		this.setMaximumSize(new Dimension(100,50));
     	
     	JButton stopSimulationButton = new JButton("Stop");
     	stopSimulationButton.addMouseListener(this);

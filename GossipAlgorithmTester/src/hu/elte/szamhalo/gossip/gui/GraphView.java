@@ -1,5 +1,6 @@
 package hu.elte.szamhalo.gossip.gui;
 
+import hu.elte.szamhalo.gossip.vo.LayoutEnum;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
@@ -10,7 +11,6 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -18,6 +18,7 @@ import java.util.TreeSet;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph;
@@ -35,11 +36,13 @@ public class GraphView {
 	 private VisualizationViewer<String, String> visualizationViewer;
 	 private int width;
 	 private int height;
+	 private LayoutEnum layoutEnum;
 	 
-	public GraphView(SortedSet<Node> graphModel, int width, int height) {
+	public GraphView(SortedSet<Node> graphModel, int width, int height, LayoutEnum layoutEnum) {
 		super();
 		this.width = width;
 		this.height = height;
+		this.layoutEnum = layoutEnum;
 		this.graphView = initGraphViewObject(graphModel);
 		visualizationViewer = initView();
 	}
@@ -61,9 +64,12 @@ public class GraphView {
 	}
 	
 	private VisualizationViewer<String, String> initView(){
-		 // Layout<V, E>, VisualizationComponent<V,E>
-      Layout<String, String> layout = new CircleLayout<String, String>(graphView);
-//      Layout<String, String> layout = new ISOMLayout<String, String>(graphView);
+      Layout<String, String> layout = null;
+      if(LayoutEnum.CIRCLE.equals(layoutEnum)){
+    	  layout = new CircleLayout<String, String>(graphView);  
+      }else{
+    	  layout = new ISOMLayout<String, String>(graphView);
+      } 
       layout.setSize(new Dimension(width,height));
       final VisualizationViewer<String,String> vv = new VisualizationViewer<String,String>(layout);
       vv.setPreferredSize(new Dimension(width,height));    
@@ -72,7 +78,6 @@ public class GraphView {
       graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
       vv.setGraphMouse(graphMouse);
       
-      // Setup up a new vertex to paint transformer...
       Transformer<String,Paint> vertexPaint = new Transformer<String,Paint>() {
           public Paint transform(String nodeId) {
           	for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {

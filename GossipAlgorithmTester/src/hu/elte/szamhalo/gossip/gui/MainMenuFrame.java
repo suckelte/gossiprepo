@@ -1,5 +1,8 @@
 package hu.elte.szamhalo.gossip.gui;
 
+import hu.elte.szamhalo.gossip.vo.ChoosingAlgorithmEnum;
+import hu.elte.szamhalo.gossip.vo.LayoutEnum;
+
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,18 +17,14 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
 public class MainMenuFrame extends JFrame {
-	private final GraphView graphView1;
-	private final GraphView graphView2;
 	private String fileName = "";
 	private JLabel fileLabel;
 	private ButtonGroup group;
 
-	public MainMenuFrame(GraphView graphView1, GraphView graphView2){
-		this.graphView1 = graphView1;
-		this.graphView2 = graphView2;
+	public MainMenuFrame(){
     	this.setTitle("Gossip Algorithm Tester");
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GridLayout gridLayout = new GridLayout(2,3);
+        GridLayout gridLayout = new GridLayout(4,2);
         gridLayout.setHgap(10);
         gridLayout.setVgap(10);
         this.setLayout(gridLayout);
@@ -46,16 +45,26 @@ public class MainMenuFrame extends JFrame {
         
         String[] comboStrings = { "CircleLayout", "ISOMLayout"};
 
-		JComboBox<String> layoutComboBox = new JComboBox<String>(comboStrings);
+		final JComboBox<String> layoutComboBox = new JComboBox<String>(comboStrings);
 		layoutComboBox.setSelectedIndex(0);
 		
+		comboStrings = new String[]{ "Flood", "Random"};
+
+		final JComboBox<String> algorithm1ComboBox = new JComboBox<String>(comboStrings);
+		layoutComboBox.setSelectedIndex(0);
+		
+		final JComboBox<String> algorithm2ComboBox = new JComboBox<String>(comboStrings);
+		layoutComboBox.setSelectedIndex(0);
+				
 		JButton startButton = new JButton("Indítás");
         this.fileLabel = new JLabel("");
         
         this.getContentPane().add(singleButton);
+        this.getContentPane().add(algorithm1ComboBox);
+        this.getContentPane().add(multiButton);
+        this.getContentPane().add(algorithm2ComboBox);
         this.getContentPane().add(openfilePanelButton);
         this.getContentPane().add(fileLabel);
-        this.getContentPane().add(multiButton);
         this.getContentPane().add(layoutComboBox);
         this.getContentPane().add(startButton);
 
@@ -75,10 +84,22 @@ public class MainMenuFrame extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(Integer.parseInt(MainMenuFrame.this.group.getSelection().getActionCommand()) == 1){
-					new SingleGraphPanel(MainMenuFrame.this.graphView1);
+				LayoutEnum le = null;
+				if(layoutComboBox.getSelectedIndex() == 0){
+					le = LayoutEnum.CIRCLE;
 				}else{
-					new MultiGraphPanel(MainMenuFrame.this.graphView1, MainMenuFrame.this.graphView2);
+					le = LayoutEnum.ISOM;
+				}
+				ChoosingAlgorithmEnum cae = null;
+				if(algorithm1ComboBox.getSelectedIndex() == 0){
+					cae = ChoosingAlgorithmEnum.FLOOD;
+				}else{
+					cae = ChoosingAlgorithmEnum.RANDOM;
+				}
+				if(Integer.parseInt(MainMenuFrame.this.group.getSelection().getActionCommand()) == 1){
+					new SingleGraphPanel(le, cae, MainMenuFrame.this.fileName);
+				}else{
+//					new MultiGraphPanel(MainMenuFrame.this.graphView1, MainMenuFrame.this.graphView2);
 				}
 			}
 		});
@@ -112,7 +133,7 @@ public class MainMenuFrame extends JFrame {
 				}
 			}
 		});
-        this.setSize(550, 150);
+        this.setSize(400, 400);
         this.setVisible(true);
     }
 }
