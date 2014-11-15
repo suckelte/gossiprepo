@@ -29,7 +29,7 @@ public class GraphGenerator {
 			graph.add(node);
 		}
 		int numberOfMinEdge = numberOfNodes - 1;
-		int numberOfMaxEdge = numberOfNodes * (numberOfNodes - 1);
+		int numberOfMaxEdge = numberOfNodes * (numberOfNodes - 1) / 2;
 		int selectedEdgeNumber = numberOfMinEdge + ((numberOfMaxEdge - numberOfMinEdge) * density / 100); 
 		
 		System.out.println("GraphGenerator:" + numberOfMinEdge + "/" + numberOfMaxEdge + ":" + selectedEdgeNumber);
@@ -38,17 +38,22 @@ public class GraphGenerator {
 			Node nextNode;
 			int nextNodeId = -1;
 			if(!graph.isEmpty()){
-				nextNode = graph.get(rand.nextInt(graph.size()));
+				do{
+					nextNode = graph.get(rand.nextInt(graph.size()));
+				}while(nextNode.getNeighbours().size() + 1 >= numberOfNodes);
 				graph.remove(nextNode);
+				
 			}else{
 				nextNodeId = rand.nextInt(connectedGraph.size());
 				nextNode = connectedGraph.get(nextNodeId);
 			}
 			if(!connectedGraph.isEmpty()){
 				int connectingNodeId;
+				boolean isAlreadyNeighbour = false;
 				do{
 					connectingNodeId = rand.nextInt(connectedGraph.size());
-				}while(connectingNodeId == nextNodeId);
+					isAlreadyNeighbour = nextNode.getNeighbours().contains(connectedGraph.get(connectingNodeId));
+				}while(connectingNodeId == nextNodeId || isAlreadyNeighbour);
 				connect(nextNode, connectedGraph.get(connectingNodeId));
 			}
 			if(nextNodeId == -1){

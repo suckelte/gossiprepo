@@ -28,7 +28,11 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 					if(nodeIndex-- == 0){
 						Node neighbour = it.next();
 						if(alreadyTold.contains(neighbour.getNodeID())){
-							nodeIndex++;
+							if(it.hasNext()){
+								nodeIndex++;
+							}else{
+								it = node.getNeighbours().iterator();
+							}
 							continue;
 						}
 						if(neighbour.getRumor() == null){
@@ -38,6 +42,7 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 							neighbour.setRumor(freshRumor);
 							neighbour.getActiveAlgorithm().getAlreadyTold().add(node.getNodeID());
 							toldRumor++;
+							alreadyTold.add(neighbour.getNodeID());
 						}else{
 							this.active = false;
 						}

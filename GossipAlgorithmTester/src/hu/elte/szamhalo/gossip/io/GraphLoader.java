@@ -66,10 +66,10 @@ public class GraphLoader {
 	            	Node secondAdded = null;
 	            	for (Iterator<Node> it = nodeList.iterator(); it.hasNext(); ) {
 	            		Node node = it.next();
-	            		if(node.getNodeID().equals(nodePair.get(0))){
+	            		if(node.getNodeID().equals("n"+nodePair.get(0))){
 	            			firstAdded = node;
 	            		}
-	            		if(node.getNodeID().equals(nodePair.get(1))){
+	            		if(node.getNodeID().equals("n"+nodePair.get(1))){
 	            			secondAdded = node;
 	            		}
 	            	}

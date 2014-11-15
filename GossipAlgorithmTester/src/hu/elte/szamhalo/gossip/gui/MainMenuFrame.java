@@ -76,10 +76,10 @@ public class MainMenuFrame extends JFrame {
 		layoutComboBox.setSelectedIndex(0);
 				
 		JButton startButton = new JButton("Indítás");
-        this.fileLabel = new JLabel("");
+        this.fileLabel = new JLabel("[fájl név]");
         
 
-		klocalTextField = new JTextField("", 30);
+		klocalTextField = new JTextField("3", 30);
 		generateTextField = new JTextField("6,80|3,40|4,100", 30);
 		
         this.getContentPane().add(singleButton);
