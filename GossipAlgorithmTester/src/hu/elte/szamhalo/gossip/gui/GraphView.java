@@ -131,7 +131,6 @@ public class GraphView {
 	public void addNode(String nodeId,String neighbourNodeId){
 		for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {
     		Node node = it.next();
-    		System.out.println(node.getNodeID());
     		if(node.getNodeID().equals(neighbourNodeId)){
     			graphView.addVertex(nodeId);
     			graphView.addEdge(nodeId + "-" + neighbourNodeId, nodeId, neighbourNodeId);
@@ -140,6 +139,7 @@ public class GraphView {
 				Node newNode = new Node(nodeId,neighbours,null, null);
 				node.getNeighbours().add(newNode);
     			newNode.setActiveAlgorithm(node.getActiveAlgorithm());
+    			graphModel.add(newNode);
     			return;
     		}
 		}
@@ -147,13 +147,55 @@ public class GraphView {
 	
 	public void removeNode(String nodeId){
 		graphView.removeVertex(nodeId);
+		for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {
+    		Node node = it.next();
+    		if(node.getNodeID().equals(nodeId)){
+    			for (Iterator<Node> it2 = node.getNeighbours().iterator(); it2.hasNext(); ) {
+    	    		Node neighbourNode = it2.next();
+    	    		neighbourNode.getNeighbours().remove(node);
+    			}
+    			graphModel.remove(node);
+    			break;
+    		}
+		}
 	}
 	
 	public void addEdge(String nodeId,String neighbourNodeId){
-		graphView.addEdge(nodeId + "-" + neighbourNodeId, nodeId, neighbourNodeId);
+		Node n1 = null;
+		Node n2 = null;
+		for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {
+    		Node node = it.next();
+    		if(node.getNodeID().equals(nodeId)){
+    			n1 = node;
+    		}else if (node.getNodeID().equals(neighbourNodeId)){
+    			n2 = node;
+    		}
+		}
+		if(n1 != null && n2 != null){
+			n1.getNeighbours().add(n2);
+			n2.getNeighbours().add(n1);
+			graphView.addEdge(nodeId + "-" + neighbourNodeId, nodeId, neighbourNodeId);
+		}
 	}
 	
 	public void removeEdge(String edgeId){
-		graphView.removeEdge(edgeId);
+		String[] edges = edgeId.split("-");
+		String nodeId = edges[0];
+		String neighbourNodeId = edges[1];
+		Node n1 = null;
+		Node n2 = null;
+		for (Iterator<Node> it = graphModel.iterator(); it.hasNext(); ) {
+    		Node node = it.next();
+    		if(node.getNodeID().equals(nodeId)){
+    			n1 = node;
+    		}else if (node.getNodeID().equals(neighbourNodeId)){
+    			n2 = node;
+    		}
+		}
+		if(n1 != null && n2 != null){
+			n1.getNeighbours().remove(n2);
+			n2.getNeighbours().remove(n1);
+			graphView.removeEdge(nodeId + "-" + neighbourNodeId);
+		}
 	}
 }

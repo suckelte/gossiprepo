@@ -5,11 +5,13 @@ import hu.elte.szamhalo.gossip.io.GraphGenerator;
 import hu.elte.szamhalo.gossip.io.GraphLoader;
 import hu.elte.szamhalo.gossip.util.GraphUtil;
 import hu.elte.szamhalo.gossip.vo.ChoosingAlgorithmEnum;
+import hu.elte.szamhalo.gossip.vo.IGraphPanel;
 import hu.elte.szamhalo.gossip.vo.LayoutEnum;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -27,7 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class SingleGraphPanel extends JFrame implements MouseListener, Runnable{
+public class SingleGraphPanel extends JFrame implements MouseListener, Runnable, IGraphPanel{
 	
     
     /**
@@ -42,18 +44,25 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable{
 	private  SortedSet<Node>  graph;
 
 	private Rumor rumor;
+
+	private int klocal;
+
+	private ControlPanel controlPanel;
+
+	private JMenu stepMenu;
 	
 	private SingleGraphPanel(){
 		this.graph = null;
 		this.setTitle("Gossip algoritmus tesztelõ program");
-    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	FlowLayout flowLayout = new FlowLayout();
         this.setLayout(flowLayout);
         this.setSize(1000,1000);
+        this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.setVisible(true);
     
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Gráf 1");
+        JMenu menu = new JMenu("Gráf szerkesztés");
         
         JMenuItem newNodeMenu = new JMenuItem("Új csomópont");
         menu.add(newNodeMenu);
@@ -69,26 +78,30 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable{
         deleteEdgeMenu.addMouseListener(this);
         menuBar.add(menu);
 
+        stepMenu = new JMenu("Lépés: 0");
+        menuBar.add(stepMenu);
         this.setJMenuBar(menuBar);
 	}
 	
-	public SingleGraphPanel(LayoutEnum le, ChoosingAlgorithmEnum cae, String fileName) {
+	public SingleGraphPanel(LayoutEnum le, ChoosingAlgorithmEnum cae, int klocal, String inputvalue) {
 		this();
-		if(fileName != null){
+		this.klocal = klocal;
+		if(inputvalue.contains(":")){
 			try {
-				graph = GraphLoader.getJSONGraph(fileName);
+				graph = GraphLoader.getJSONGraph(inputvalue);
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 				graph = GraphGenerator.getComplexGraph(new Integer[]{4,2,6,4}, new Integer[]{70,50,70,50});
 			}
 		}else{
-			graph = GraphGenerator.getComplexGraph(new Integer[]{4,2,6,4}, new Integer[]{70,50,70,50});
+			graph = GraphGenerator.getComplexGraph(inputvalue);
 		}
 		GraphUtil.setChoosingAlgorithm(graph, cae);
 		rumor = GraphUtil.setRandomRumor(graph);
 		graphView = new GraphView(graph,900,900,le);
 		this.getContentPane().add(graphView.getVisualizationViewer());
-		this.getContentPane().add(new ControlPanel(this,true));
+		controlPanel = new ControlPanel(this,true);
+		this.getContentPane().add(controlPanel);
 		
 		new Thread(this).start();
 	}
@@ -100,8 +113,6 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {}
-	
-	
 
 	@Override
 	public void mouseEntered(MouseEvent e) {}
@@ -190,7 +201,9 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable{
 		try {
 			Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 		} catch (InterruptedException e1) {}
-		while(true){
+		int step = 0;
+		boolean done = false;
+		while(!done){
 			if(nextStep-- > 0){
 	        	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
 	        		Node node = it.next();
@@ -203,7 +216,14 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable{
 	        		}
 	        	}
 	        	graphView.repaint();
-	        	System.out.println(RumorVerifier.verify(rumor, 3));
+	        	Node missingNode = RumorVerifier.verify(rumor, klocal);
+	        	if(missingNode != null){
+	        		controlPanel.setVerifier1Text(missingNode.getNodeID());
+	        	}else{
+	        		done = true;
+	        		controlPanel.setVerifier1Text("Done!");
+	        	}
+	        	stepMenu.setText("Lépés: " + ++step);
 			}
             try {
 				Thread.sleep(TimeUnit.SECONDS.toMillis(1));

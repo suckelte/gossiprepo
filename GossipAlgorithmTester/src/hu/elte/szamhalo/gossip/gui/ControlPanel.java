@@ -1,5 +1,7 @@
 package hu.elte.szamhalo.gossip.gui;
 
+import hu.elte.szamhalo.gossip.vo.IGraphPanel;
+
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -18,12 +20,13 @@ public class ControlPanel extends JPanel implements MouseListener{
 	 */
 	private static final long serialVersionUID = -5569988446826483845L;
 	
-	private JTextField generateTextField;
-	private SingleGraphPanel singleGraphPanel;
+	private JTextField verifierTextField1;
+	private JTextField verifierTextField2;
+	private IGraphPanel graphPanel;
 	
 	
-	public ControlPanel(SingleGraphPanel singleGraphPanel, boolean enableGenerating) {
-		this.singleGraphPanel = singleGraphPanel;
+	public ControlPanel(IGraphPanel graphPanel, boolean enableGenerating) {
+		this.graphPanel = graphPanel;
     	this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		this.setLayout(gridBagLayout);
@@ -61,38 +64,36 @@ public class ControlPanel extends JPanel implements MouseListener{
 //        gbc.anchor = GridBagConstraints.CENTER;
         add(startSimulationButton, gbc);
 		
-		if(enableGenerating){
-			JButton generateSimulationButton = new JButton("Generálás");
-			generateSimulationButton.addMouseListener(this);
-			generateSimulationButton.setSize(30, 20);
-			generateTextField = new JTextField("", 40);
-			
-			gbc.gridx = 0;
-	        gbc.gridy = 1;
-//	        gbc.fill = GridBagConstraints.HORIZONTAL;
-//	        gbc.anchor = GridBagConstraints.CENTER;
-	        add(generateSimulationButton, gbc);
-	        
-	        gbc.gridx = 1;
-	        gbc.gridy = 1;
-//	        gbc.fill = GridBagConstraints.HORIZONTAL;
-//	        gbc.anchor = GridBagConstraints.CENTER;
-	        add(generateTextField, gbc);
-		}
+		verifierTextField1 = new JTextField("", 40);
+		verifierTextField2 = new JTextField("", 40);
+		
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(verifierTextField1, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        add(verifierTextField2, gbc);
 	}
 	
+	
+	public void setVerifier1Text(String verificationString){
+		verifierTextField1.setText(verificationString);
+	}
+	
+	public void setVerifier2Text(String verificationString){
+		verifierTextField2.setText(verificationString);
+	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(((JButton)e.getSource()).getText().equals("Stop")){
-			singleGraphPanel.setNextstep(0);
+			graphPanel.setNextstep(0);
 		}else if (((JButton)e.getSource()).getText().equals(">")){
-			singleGraphPanel.setNextstep(Integer.MAX_VALUE);
+			graphPanel.setNextstep(Integer.MAX_VALUE);
 		}else if (((JButton)e.getSource()).getText().equals(">|")){
-			singleGraphPanel.setNextstep(1);
+			graphPanel.setNextstep(1);
 		}else if (((JButton)e.getSource()).getText().equals("Generálás")){
-			singleGraphPanel.setNextstep(0);
-			generateTextField.getText();
+			graphPanel.setNextstep(0);
 		}
 	}
 

@@ -92,4 +92,17 @@ public class GraphGenerator {
 		return new TreeSet<Node>(complexGraph);
 	}
 	
+	public static SortedSet<Node> getComplexGraph(String inputString){
+		String[] groups = inputString.split("\\|");
+		Integer[] nodenum = new Integer[groups.length];
+		Integer[] nodeden = new Integer[groups.length];
+		int i = 0;
+		for (String group : groups) {
+			String[] val = group.split(",");
+			nodenum[i] = Integer.parseInt(val[0]);
+			nodeden[i++] = Integer.parseInt(val[1]);
+		}
+		return getComplexGraph(nodenum, nodeden);
+	}
+	
 }

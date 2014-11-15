@@ -9,7 +9,7 @@ public interface IChoosingAlgorithm {
 	 */
 	public int step();
 	/**
-	 * is the node activelly spreading the rumor
+	 * is the node actively spreading the rumor
 	 */
 	public boolean isActive();
 	

@@ -15,16 +15,24 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 public class MainMenuFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1281533343606807590L;
 	private String fileName = "";
 	private JLabel fileLabel;
 	private ButtonGroup group;
+	private JTextField klocalTextField;
+	private JTextField generateTextField;
+	private ButtonGroup group2;
 
 	public MainMenuFrame(){
     	this.setTitle("Gossip Algorithm Tester");
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GridLayout gridLayout = new GridLayout(4,2);
+        GridLayout gridLayout = new GridLayout(8,2);
         gridLayout.setHgap(10);
         gridLayout.setVgap(10);
         this.setLayout(gridLayout);
@@ -43,6 +51,17 @@ public class MainMenuFrame extends JFrame {
         group.add(singleButton);
         group.add(multiButton);
         
+        JRadioButton fileButton = new JRadioButton("Fájlból olvasás");
+        fileButton.setActionCommand("1");
+        JRadioButton generateButton = new JRadioButton("Gráf generálás");
+        generateButton.setActionCommand("2");
+        generateButton.setSelected(true);
+
+        //Group the radio buttons.
+        group2 = new ButtonGroup();
+        group2.add(fileButton);
+        group2.add(generateButton);
+        
         String[] comboStrings = { "CircleLayout", "ISOMLayout"};
 
 		final JComboBox<String> layoutComboBox = new JComboBox<String>(comboStrings);
@@ -59,13 +78,26 @@ public class MainMenuFrame extends JFrame {
 		JButton startButton = new JButton("Indítás");
         this.fileLabel = new JLabel("");
         
+
+		klocalTextField = new JTextField("", 30);
+		generateTextField = new JTextField("6,80|3,40|4,100", 30);
+		
         this.getContentPane().add(singleButton);
         this.getContentPane().add(algorithm1ComboBox);
         this.getContentPane().add(multiButton);
         this.getContentPane().add(algorithm2ComboBox);
+        this.getContentPane().add(fileButton);
+        this.getContentPane().add(new JLabel(""));
         this.getContentPane().add(openfilePanelButton);
         this.getContentPane().add(fileLabel);
+        this.getContentPane().add(generateButton);
+        this.getContentPane().add(generateTextField);
+        this.getContentPane().add(new JLabel("Layout: "));
         this.getContentPane().add(layoutComboBox);
+        this.getContentPane().add(new JLabel("K-local érték: "));
+        this.getContentPane().add(klocalTextField);
+        
+        
         this.getContentPane().add(startButton);
 
         
@@ -96,10 +128,18 @@ public class MainMenuFrame extends JFrame {
 				}else{
 					cae = ChoosingAlgorithmEnum.RANDOM;
 				}
-				if(Integer.parseInt(MainMenuFrame.this.group.getSelection().getActionCommand()) == 1){
-					new SingleGraphPanel(le, cae, MainMenuFrame.this.fileName);
+				ChoosingAlgorithmEnum cae2;
+				if(algorithm2ComboBox.getSelectedIndex() == 0){
+					cae2 = ChoosingAlgorithmEnum.FLOOD;
 				}else{
-//					new MultiGraphPanel(MainMenuFrame.this.graphView1, MainMenuFrame.this.graphView2);
+					cae2 = ChoosingAlgorithmEnum.RANDOM;
+				}
+				if(Integer.parseInt(MainMenuFrame.this.group.getSelection().getActionCommand()) == 1){
+					new SingleGraphPanel(le, cae,Integer.parseInt(klocalTextField.getText()),
+							(Integer.parseInt(MainMenuFrame.this.group2.getSelection().getActionCommand()) == 1 ? fileName : generateTextField.getText()));
+				}else{
+					new MultiGraphPanel(le, cae, cae2 ,Integer.parseInt(klocalTextField.getText()),
+							(Integer.parseInt(MainMenuFrame.this.group2.getSelection().getActionCommand()) == 1 ? fileName : generateTextField.getText()));
 				}
 			}
 		});
