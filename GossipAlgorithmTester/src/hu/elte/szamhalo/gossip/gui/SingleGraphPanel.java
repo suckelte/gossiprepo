@@ -10,8 +10,8 @@ import hu.elte.szamhalo.gossip.vo.LayoutEnum;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
-import java.awt.FlowLayout;
-import java.awt.Frame;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -54,11 +54,8 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 	private SingleGraphPanel(){
 		this.graph = null;
 		this.setTitle("Gossip algoritmus tesztelõ program");
-//    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	FlowLayout flowLayout = new FlowLayout();
-        this.setLayout(flowLayout);
-        this.setSize(1000,1000);
-        this.setExtendedState(Frame.MAXIMIZED_BOTH);
+        this.setLayout(new BorderLayout());
+        this.setSize(930,1000);
         this.setVisible(true);
     
         JMenuBar menuBar = new JMenuBar();
@@ -98,10 +95,15 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 		}
 		GraphUtil.setChoosingAlgorithm(graph, cae);
 		rumor = GraphUtil.setRandomRumor(graph);
-		graphView = new GraphView(graph,900,900,le);
-		this.getContentPane().add(graphView.getVisualizationViewer());
-		controlPanel = new ControlPanel(this,true);
-		this.getContentPane().add(controlPanel);
+		graphView = new GraphView(graph,880,880,le);
+		this.getContentPane().add(graphView.getVisualizationViewer(),BorderLayout.NORTH);
+		controlPanel = new ControlPanel(this);
+        
+        JPanel cp = new JPanel(new GridLayout(1, 3));
+        cp.add(new JLabel(""));
+        cp.add(controlPanel);
+        cp.add(new JLabel(""));
+		this.getContentPane().add(cp,BorderLayout.SOUTH);
 		
 		new Thread(this).start();
 	}
@@ -202,12 +204,13 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 			Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 		} catch (InterruptedException e1) {}
 		int step = 0;
+		int stepCount = 0;
 		boolean done = false;
 		while(!done){
 			if(nextStep-- > 0){
 	        	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
 	        		Node node = it.next();
-	        		node.getActiveAlgorithm().step();
+	        		stepCount += node.getActiveAlgorithm().step();
 	        	}
 	        	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
 	        		Node node = it.next();
@@ -218,10 +221,23 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 	        	graphView.repaint();
 	        	Node missingNode = RumorVerifier.verify(rumor, klocal);
 	        	if(missingNode != null){
-	        		controlPanel.setVerifier1Text(missingNode.getNodeID());
+	        		boolean failed = true;
+	        		for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
+		        		Node node = it.next();
+		        		if(node.getActiveAlgorithm().isActive()  && node.getRumor() != null){
+		        			failed = false;
+		        			break;
+		        		}
+	        		}
+	        		if(failed){
+		        		done = true;
+	        			controlPanel.setVerifier1Text("Sikertelen!");
+	        		}else{
+	        			controlPanel.setVerifier1Text(missingNode.getNodeID());
+	        		}
 	        	}else{
 	        		done = true;
-	        		controlPanel.setVerifier1Text("Done!");
+	        		controlPanel.setVerifier1Text("Kész!(" + stepCount + ")");
 	        	}
 	        	stepMenu.setText("Lépés: " + ++step);
 			}

@@ -15,7 +15,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class MainMenuFrame extends JFrame {
 	/**
@@ -30,9 +32,9 @@ public class MainMenuFrame extends JFrame {
 	private ButtonGroup group2;
 
 	public MainMenuFrame(){
-    	this.setTitle("Gossip Algorithm Tester");
+    	this.setTitle("Gossip algoritmus tesztelõ program");
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GridLayout gridLayout = new GridLayout(8,2);
+        GridLayout gridLayout = new GridLayout(12,2);
         gridLayout.setHgap(10);
         gridLayout.setVgap(10);
         this.setLayout(gridLayout);
@@ -80,18 +82,22 @@ public class MainMenuFrame extends JFrame {
         
 
 		klocalTextField = new JTextField("3", 30);
-		generateTextField = new JTextField("6,80|3,40|4,100", 30);
+		generateTextField = new JTextField("6,0|3,40|4,100", 30);
 		
         this.getContentPane().add(singleButton);
         this.getContentPane().add(algorithm1ComboBox);
         this.getContentPane().add(multiButton);
         this.getContentPane().add(algorithm2ComboBox);
+        this.getContentPane().add(new JSeparator(SwingConstants.HORIZONTAL));
+        this.getContentPane().add(new JSeparator(SwingConstants.HORIZONTAL));
         this.getContentPane().add(fileButton);
         this.getContentPane().add(new JLabel(""));
         this.getContentPane().add(openfilePanelButton);
-        this.getContentPane().add(fileLabel);
+        this.getContentPane().add(fileLabel);        
         this.getContentPane().add(generateButton);
         this.getContentPane().add(generateTextField);
+        this.getContentPane().add(new JSeparator(SwingConstants.HORIZONTAL));
+        this.getContentPane().add(new JSeparator(SwingConstants.HORIZONTAL));
         this.getContentPane().add(new JLabel("Layout: "));
         this.getContentPane().add(layoutComboBox);
         this.getContentPane().add(new JLabel("K-local érték: "));

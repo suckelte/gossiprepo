@@ -1,5 +1,6 @@
 package hu.elte.szamhalo.gossip.algorithm;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class FloodAlgorithm implements IChoosingAlgorithm {
 
 	private boolean active = true;
 	private Node node;
+	private List<String> alreadyTold = new ArrayList<String>();
 
 	@Override
 	public int step() {
@@ -22,11 +24,13 @@ public class FloodAlgorithm implements IChoosingAlgorithm {
 					Rumor freshRumor = node.getRumor();
 					freshRumor.setFresh(true);
 					neighbour.setRumor(freshRumor);
-					toldRumor++;
-				}else{
-					this.active = false;
+					neighbour.getActiveAlgorithm().getAlreadyTold().add(node.getNodeID());
 				}
+				toldRumor++;
 			}
+
+			toldRumor -= alreadyTold.size();
+			this.active = false;
 		}
 		return toldRumor;
 	}
@@ -42,7 +46,6 @@ public class FloodAlgorithm implements IChoosingAlgorithm {
 
 	@Override
 	public List<String> getAlreadyTold() {
-		// TODO Auto-generated method stub
-		return null;
+		return alreadyTold;
 	}
 }

@@ -41,7 +41,6 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 							freshRumor.setSourceNode(node.getRumor().getSourceNode());
 							neighbour.setRumor(freshRumor);
 							neighbour.getActiveAlgorithm().getAlreadyTold().add(node.getNodeID());
-							toldRumor++;
 							alreadyTold.add(neighbour.getNodeID());
 						}else{
 							this.active = false;
@@ -49,6 +48,7 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 						break;
 				}
 			}
+			toldRumor = 1;
 		}
 		if(node.getNeighbours().size() == alreadyTold.size()){
 			this.active = false;

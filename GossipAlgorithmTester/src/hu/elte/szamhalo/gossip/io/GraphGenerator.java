@@ -38,14 +38,13 @@ public class GraphGenerator {
 			Node nextNode;
 			int nextNodeId = -1;
 			if(!graph.isEmpty()){
-				do{
-					nextNode = graph.get(rand.nextInt(graph.size()));
-				}while(nextNode.getNeighbours().size() + 1 >= numberOfNodes);
+				nextNode = graph.get(rand.nextInt(graph.size()));
 				graph.remove(nextNode);
-				
 			}else{
-				nextNodeId = rand.nextInt(connectedGraph.size());
-				nextNode = connectedGraph.get(nextNodeId);
+				do{
+					nextNodeId = rand.nextInt(connectedGraph.size());
+					nextNode = connectedGraph.get(nextNodeId);
+				}while(nextNode.getNeighbours().size() + 1 >= numberOfNodes);
 			}
 			if(!connectedGraph.isEmpty()){
 				int connectingNodeId;

@@ -11,8 +11,8 @@ import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -59,14 +59,11 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 	private JMenu stepMenu1;
 	private JMenu stepMenu2;
 
-	public MultiGraphPanel(){
+	private MultiGraphPanel(){
 		this.graph1 = null;
 		this.graph2 = null;
 		this.setTitle("Gossip algoritmus tesztelõ program");
-		
-        
-        FlowLayout flowLayout = new FlowLayout();
-        this.setLayout(flowLayout);
+        this.setLayout(new BorderLayout());
         this.setSize(1500,1000);
         this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.setVisible(true);
@@ -145,11 +142,17 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		multipanel.add(graphView1.getVisualizationViewer(), BorderLayout.WEST);
 		multipanel.add(graphView2.getVisualizationViewer(), BorderLayout.EAST);
 		
-		this.getContentPane().add(multipanel);
+		this.getContentPane().add(multipanel,BorderLayout.NORTH);
 		
-		controlPanel = new ControlPanel(this,true);
+		controlPanel = new ControlPanel(this);
 		
-		this.getContentPane().add(controlPanel);
+        JPanel cp = new JPanel(new GridLayout(1, 3));
+        cp.add(new JLabel(""));
+        cp.add(controlPanel);
+        cp.add(new JLabel(""));
+		this.getContentPane().add(cp,BorderLayout.SOUTH);
+		
+//		this.getContentPane().add(controlPanel);
 		
 		new Thread(this).start();
 	}
@@ -321,13 +324,15 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		boolean done1 = false;
 		boolean done2 = false;
 		int step = 0;
+		int stepCount1 = 0;
+		int stepCount2 = 0;
 		while(true){
 			if(nextStep-- > 0){
 				step++;
 				if(!done1){
 		        	for (Iterator<Node> it = graph1.iterator(); it.hasNext(); ) {
 		        		Node node = it.next();
-		        		node.getActiveAlgorithm().step();
+		        		stepCount1 += node.getActiveAlgorithm().step();
 		        	}
 		        	for (Iterator<Node> it = graph1.iterator(); it.hasNext(); ) {
 		        		Node node = it.next();
@@ -354,14 +359,14 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		        		}
 		        	}else{
 		        		done1 = true;
-		        		controlPanel.setVerifier1Text("Done!");
+		        		controlPanel.setVerifier1Text("Kész!(" + stepCount1 + ")");
 		        	}
 		        	stepMenu1.setText("Lépés(gráf 1): " + step);
 				}
 	        	if(!done2){
 		        	for (Iterator<Node> it = graph2.iterator(); it.hasNext(); ) {
 		        		Node node = it.next();
-		        		node.getActiveAlgorithm().step();
+		        		stepCount2 += node.getActiveAlgorithm().step();
 		        	}
 		        	for (Iterator<Node> it = graph2.iterator(); it.hasNext(); ) {
 		        		Node node = it.next();
@@ -388,7 +393,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		        		}
 		        	}else{
 		        		done2 = true;
-		        		controlPanel.setVerifier2Text("Done!");
+		        		controlPanel.setVerifier2Text("Kész!(" + stepCount2 + ")");
 		        	}
 
 		        	stepMenu2.setText("Lépés(gráf 2): " + step);
