@@ -69,7 +69,7 @@ public class MainMenuFrame extends JFrame {
 		final JComboBox<String> layoutComboBox = new JComboBox<String>(comboStrings);
 		layoutComboBox.setSelectedIndex(0);
 		
-		comboStrings = new String[]{ "Flood", "Random"};
+		comboStrings = new String[]{ "Flood", "Round-robin flooding", "Egyszerû véletlen"};
 
 		final JComboBox<String> algorithm1ComboBox = new JComboBox<String>(comboStrings);
 		layoutComboBox.setSelectedIndex(0);
@@ -129,16 +129,28 @@ public class MainMenuFrame extends JFrame {
 					le = LayoutEnum.ISOM;
 				}
 				ChoosingAlgorithmEnum cae = null;
-				if(algorithm1ComboBox.getSelectedIndex() == 0){
-					cae = ChoosingAlgorithmEnum.FLOOD;
-				}else{
-					cae = ChoosingAlgorithmEnum.RANDOM;
+				switch (algorithm1ComboBox.getSelectedIndex()){
+					case 0:
+						cae = ChoosingAlgorithmEnum.FLOOD;
+						break;
+					case 1:
+						cae = ChoosingAlgorithmEnum.RANDOM;
+						break;
+					default:
+						cae = ChoosingAlgorithmEnum.SIMPLERANDOM;
+						break;
 				}
 				ChoosingAlgorithmEnum cae2;
-				if(algorithm2ComboBox.getSelectedIndex() == 0){
-					cae2 = ChoosingAlgorithmEnum.FLOOD;
-				}else{
-					cae2 = ChoosingAlgorithmEnum.RANDOM;
+				switch (algorithm2ComboBox.getSelectedIndex()){
+					case 0:
+						cae2 = ChoosingAlgorithmEnum.FLOOD;
+						break;
+					case 1:
+						cae2 = ChoosingAlgorithmEnum.RANDOM;
+						break;
+					default:
+						cae2 = ChoosingAlgorithmEnum.SIMPLERANDOM;
+						break;
 				}
 				if(Integer.parseInt(MainMenuFrame.this.group.getSelection().getActionCommand()) == 1){
 					new SingleGraphPanel(le, cae,Integer.parseInt(klocalTextField.getText()),
