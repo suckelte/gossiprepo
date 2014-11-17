@@ -2,6 +2,7 @@ package hu.elte.szamhalo.gossip.util;
 
 import hu.elte.szamhalo.gossip.algorithm.FloodAlgorithm;
 import hu.elte.szamhalo.gossip.algorithm.RandomAlgorithm;
+import hu.elte.szamhalo.gossip.algorithm.SimpleRandomAlgorithm;
 import hu.elte.szamhalo.gossip.vo.ChoosingAlgorithmEnum;
 import hu.elte.szamhalo.gossip.vo.IChoosingAlgorithm;
 import hu.elte.szamhalo.gossip.vo.Node;
@@ -40,6 +41,11 @@ public class GraphUtil {
 				case RANDOM:
 					activeAlgorithm = new RandomAlgorithm(node);
 					break;
+			case SIMPLERANDOM:
+				activeAlgorithm = new SimpleRandomAlgorithm(node);
+				break;
+			default:
+				break;
     		}
 			node.setActiveAlgorithm(activeAlgorithm);
     	}

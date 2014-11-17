@@ -15,7 +15,9 @@ import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
@@ -216,6 +218,15 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 	        		Node node = it.next();
 	        		if(node.getRumor() != null){
 	        			node.getRumor().setFresh(false);
+	        		}
+	        		if(node.getActiveAlgorithm().isActive()){
+		        		List<String> neighbourIDs = new ArrayList<String>();
+		        		for (Iterator<Node> it2 = node.getNeighbours().iterator(); it2.hasNext(); ) {
+		        			neighbourIDs.add(it2.next().getNodeID());
+		        		}
+		        		if(node.getActiveAlgorithm().getAlreadyTold().containsAll(neighbourIDs)){
+		        			node.getActiveAlgorithm().setActive(false);
+		        		}
 	        		}
 	        	}
 	        	graphView.repaint();

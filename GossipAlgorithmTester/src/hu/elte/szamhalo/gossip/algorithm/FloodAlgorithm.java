@@ -48,4 +48,8 @@ public class FloodAlgorithm implements IChoosingAlgorithm {
 	public List<String> getAlreadyTold() {
 		return alreadyTold;
 	}
+	@Override
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 }

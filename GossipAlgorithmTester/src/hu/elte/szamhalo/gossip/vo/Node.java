@@ -90,7 +90,26 @@ public class Node implements Comparable<Node>{
 	 */
 	@Override
 	public String toString() {
-		return super.toString() + "/" + this.getNodeID();
+		return this.getNodeID();
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return nodeID.hashCode();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass().getName().equals(this.getClass().getName()) &&
+				((Node)obj).getNodeID().equals(this.nodeID);
 	}
 
 	@Override

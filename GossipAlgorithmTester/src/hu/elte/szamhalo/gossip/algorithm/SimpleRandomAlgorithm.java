@@ -9,7 +9,7 @@ import hu.elte.szamhalo.gossip.vo.IChoosingAlgorithm;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
-public class RandomAlgorithm implements IChoosingAlgorithm {
+public class SimpleRandomAlgorithm implements IChoosingAlgorithm {
 
 	private boolean active = true;
 	private Node node;
@@ -21,7 +21,6 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 	public int step() {
 		int toldRumor = 0;
 		if(isActive() && node.getRumor() != null && !node.getRumor().isFresh()){
-			System.out.println(node.getNodeID());
 			int nodeIndex = rand.nextInt(node.getNeighbours().size());
 			System.out.println(nodeIndex);
 			for (Iterator<Node> it = node.getNeighbours().iterator(); it.hasNext(); ) {
@@ -40,18 +39,14 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 							freshRumor.setFresh(true);
 							freshRumor.setSourceNode(node.getRumor().getSourceNode());
 							neighbour.setRumor(freshRumor);
+							neighbour.getActiveAlgorithm().getAlreadyTold().addAll(alreadyTold);
 							neighbour.getActiveAlgorithm().getAlreadyTold().add(node.getNodeID());
-							alreadyTold.add(neighbour.getNodeID());
-						}else{
-							this.active = false;
 						}
+						this.active = false;
 						break;
 				}
 			}
 			toldRumor = 1;
-		}
-		if(node.getNeighbours().size() == alreadyTold.size()){
-			this.active = false;
 		}
 		return toldRumor;
 	}
@@ -61,7 +56,7 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 		return this.active;
 	}
 
-	public RandomAlgorithm(Node node){
+	public SimpleRandomAlgorithm(Node node){
 		this.node = node;
 	}
 

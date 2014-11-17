@@ -18,4 +18,6 @@ public interface IChoosingAlgorithm {
 	 * @return
 	 */
 	public List<String> getAlreadyTold();
+	
+	public void setActive(boolean active);
 }
