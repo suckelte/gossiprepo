@@ -11,7 +11,7 @@ import hu.elte.szamhalo.gossip.vo.Rumor;
 
 public class SimpleRandomAlgorithm implements IChoosingAlgorithm {
 
-	private boolean active = true;
+	private boolean active = true; 
 	private Node node;
 	private List<String> alreadyTold = new ArrayList<String>();
 
