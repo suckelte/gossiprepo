@@ -15,9 +15,9 @@ import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
@@ -48,16 +48,22 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 	private Rumor rumor;
 
 	private int klocal;
+	
+	private Integer stepCount = 0;
 
 	private ControlPanel controlPanel;
 
 	private JMenu stepMenu;
 	
+	private Boolean done = false;
+
+	private int threadReadyNumber = 0;
+	
 	private SingleGraphPanel(){
 		this.graph = null;
 		this.setTitle("Gossip algoritmus tesztelõ program");
         this.setLayout(new BorderLayout());
-        this.setSize(930,1000);
+        this.setSize(850,920);
         this.setVisible(true);
     
         JMenuBar menuBar = new JMenuBar();
@@ -85,27 +91,26 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 	public SingleGraphPanel(LayoutEnum le, ChoosingAlgorithmEnum cae, int klocal, String inputvalue) {
 		this();
 		this.klocal = klocal;
-		if(inputvalue.contains(":")){
+		if(inputvalue.contains("grph")){
 			try {
 				graph = GraphLoader.getJSONGraph(inputvalue);
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
-				graph = GraphGenerator.getComplexGraph(new Integer[]{4,2,6,4}, new Integer[]{70,50,70,50});
 			}
 		}else{
 			graph = GraphGenerator.getComplexGraph(inputvalue);
 		}
-		GraphUtil.setChoosingAlgorithm(graph, cae);
-		rumor = GraphUtil.setRandomRumor(graph);
-		graphView = new GraphView(graph,880,880,le);
-		this.getContentPane().add(graphView.getVisualizationViewer(),BorderLayout.NORTH);
+		rumor = GraphUtil.setN1Rumor(graph);
+		graphView = new GraphView(graph,800,800,le);
+		GraphUtil.setChoosingAlgorithm(graph, cae, graphView.getDiameter());
+		this.getContentPane().add(graphView.getVisualizationViewer(),BorderLayout.SOUTH);
 		controlPanel = new ControlPanel(this);
         
         JPanel cp = new JPanel(new GridLayout(1, 3));
         cp.add(new JLabel(""));
         cp.add(controlPanel);
         cp.add(new JLabel(""));
-		this.getContentPane().add(cp,BorderLayout.SOUTH);
+		this.getContentPane().add(cp,BorderLayout.NORTH);
 		
 		new Thread(this).start();
 	}
@@ -206,57 +211,81 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 			Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 		} catch (InterruptedException e1) {}
 		int step = 0;
-		int stepCount = 0;
-		boolean done = false;
-		while(!done){
+		while(!getDone()){
 			if(nextStep-- > 0){
+				controlPanel.startSimulationButton.setEnabled(false);
+				controlPanel.step1SimulationButton.setEnabled(false);
+				Set<Thread> threadSet = new HashSet<Thread>(); 
 	        	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
-	        		Node node = it.next();
-	        		stepCount += node.getActiveAlgorithm().step();
+	        		final Node node = it.next();
+	        		threadSet.add(new Thread(new Runnable() {
+						@Override
+						public void run() {
+							setStepCount(node.getActiveAlgorithm().step(graphView) + getStepCount());
+							setThreadReadyNumber();
+						}
+					}));
 	        	}
-	        	for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
-	        		Node node = it.next();
-	        		if(node.getRumor() != null){
-	        			node.getRumor().setFresh(false);
-	        		}
-	        		if(node.getActiveAlgorithm().isActive()){
-		        		List<String> neighbourIDs = new ArrayList<String>();
-		        		for (Iterator<Node> it2 = node.getNeighbours().iterator(); it2.hasNext(); ) {
-		        			neighbourIDs.add(it2.next().getNodeID());
-		        		}
-		        		if(node.getActiveAlgorithm().getAlreadyTold().containsAll(neighbourIDs)){
-		        			node.getActiveAlgorithm().setActive(false);
-		        		}
-	        		}
+	        	for (Iterator<Thread> it = threadSet.iterator(); it.hasNext(); ) {
+	        		final Thread th = it.next();
+	        		th.start();
 	        	}
-	        	graphView.repaint();
-	        	Node missingNode = RumorVerifier.verify(rumor, klocal);
-	        	if(missingNode != null){
-	        		boolean failed = true;
-	        		for (Iterator<Node> it = graph.iterator(); it.hasNext(); ) {
-		        		Node node = it.next();
-		        		if(node.getActiveAlgorithm().isActive()  && node.getRumor() != null){
-		        			failed = false;
-		        			break;
-		        		}
-	        		}
-	        		if(failed){
-		        		done = true;
-	        			controlPanel.setVerifier1Text("Sikertelen!");
-	        		}else{
-	        			controlPanel.setVerifier1Text(missingNode.getNodeID());
-	        		}
-	        	}else{
-	        		done = true;
-	        		controlPanel.setVerifier1Text("Kész!(" + stepCount + ")");
-	        	}
+	        	new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						graphView.repaint();
+			        	do{
+			        		try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+			        	}while(graph.size() != getThreadReadyNumber());
+			        	Node missingNode = RumorVerifier.verify(rumor, klocal);
+			        	if(missingNode != null){
+			        		controlPanel.setVerifier1Text(missingNode.getNodeID());
+			        	}else{
+			        		setDone(true);
+			        		controlPanel.setVerifier1Text("Kész!(" + stepCount + ")");
+			        	}
+			        	controlPanel.startSimulationButton.setEnabled(true);
+						controlPanel.step1SimulationButton.setEnabled(true);
+						threadReadyNumber = 0;
+					}
+
+				}).start();
 	        	stepMenu.setText("Lépés: " + ++step);
 			}
             try {
-				Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+				Thread.sleep(TimeUnit.SECONDS.toMillis(2));
 			} catch (InterruptedException e) {}
         }
 		
+	}
+
+	private synchronized Integer getStepCount() {
+		return stepCount;
+	}
+
+	private synchronized void setStepCount(Integer stepCount) {
+		this.stepCount = stepCount;
+	}
+
+	public synchronized int getThreadReadyNumber() {
+		return threadReadyNumber;
+	}
+
+	public  synchronized void setThreadReadyNumber() {
+		this.threadReadyNumber += 1;
+	}
+
+	public synchronized Boolean getDone() {
+		return done;
+	}
+
+	public synchronized void setDone(Boolean done) {
+		this.done = done;
 	}
 
 }

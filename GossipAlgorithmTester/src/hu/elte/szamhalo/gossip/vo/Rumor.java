@@ -6,8 +6,6 @@ public class Rumor {
 	 */
 	private Node sourceNode;
 	
-	private boolean fresh = false;
-	
 	/**
 	 * @return the sourceNode
 	 */
@@ -19,11 +17,5 @@ public class Rumor {
 	 */
 	public void setSourceNode(Node sourceNode) {
 		this.sourceNode = sourceNode;
-	}
-	public boolean isFresh() {
-		return fresh;
-	}
-	public void setFresh(boolean fresh) {
-		this.fresh = fresh;
 	}
 }

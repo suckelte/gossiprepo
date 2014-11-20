@@ -20,6 +20,7 @@ import org.apache.commons.collections15.Transformer;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -84,11 +85,7 @@ public class GraphView {
           		Node node = it.next();
           		if(node.getNodeID().equals(nodeId)){
           			if(node.getRumor() != null){
-          				if(!node.getActiveAlgorithm().isActive()){
-          					return Color.YELLOW;
-          				}else{
-          					return Color.GREEN;
-          				}
+          				return Color.GREEN;
           			}else{
           				return Color.RED;
           			}
@@ -197,5 +194,9 @@ public class GraphView {
 			n2.getNeighbours().remove(n1);
 			graphView.removeEdge(nodeId + "-" + neighbourNodeId);
 		}
+	}
+	
+	public double getDiameter(){
+		return DistanceStatistics.diameter(graphView);
 	}
 }

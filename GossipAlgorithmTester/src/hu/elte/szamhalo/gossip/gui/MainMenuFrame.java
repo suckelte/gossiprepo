@@ -57,7 +57,7 @@ public class MainMenuFrame extends JFrame {
         fileButton.setActionCommand("1");
         JRadioButton generateButton = new JRadioButton("Gráf generálás");
         generateButton.setActionCommand("2");
-        generateButton.setSelected(true);
+        fileButton.setSelected(true);
 
         //Group the radio buttons.
         group2 = new ButtonGroup();
@@ -69,7 +69,7 @@ public class MainMenuFrame extends JFrame {
 		final JComboBox<String> layoutComboBox = new JComboBox<String>(comboStrings);
 		layoutComboBox.setSelectedIndex(0);
 		
-		comboStrings = new String[]{ "Flood", "Round-robin flooding", "Egyszerû véletlen"};
+		comboStrings = new String[]{ "1. Round-robin flooding", "2. Egyszerû véletlen", "3. Determinisztikus", "4. Determinisztikus fa"};
 
 		final JComboBox<String> algorithm1ComboBox = new JComboBox<String>(comboStrings);
 		layoutComboBox.setSelectedIndex(0);

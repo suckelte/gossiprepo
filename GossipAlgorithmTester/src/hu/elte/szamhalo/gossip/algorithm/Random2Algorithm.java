@@ -10,7 +10,7 @@ import hu.elte.szamhalo.gossip.vo.IChoosingAlgorithm;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
-public class RandomAlgorithm implements IChoosingAlgorithm {
+public class Random2Algorithm implements IChoosingAlgorithm {
 
 	private Node node;
 	private List<String> alreadyTold = new ArrayList<String>();
@@ -18,27 +18,18 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 	private double diameter;
 	private int maxDegree;
 
-	private static Random rand = new Random();
 	
 	@Override
 	public int step(GraphView graphView) {
 		int toldRumor = 0;
-			for(int i = 0 ; i < this.n && alreadyTold.size() != node.getNeighbours().size();i++){
-				int nodeIndex = rand.nextInt(node.getNeighbours().size());
+			if(alreadyTold.size() != node.getNeighbours().size()){
+				int nodeIndex = alreadyTold.size();
 				for (Iterator<Node> it = node.getNeighbours().iterator(); it.hasNext(); ) {
-						if(nodeIndex-- == 0){
-							Node neighbour = it.next();
-							if(alreadyTold.contains(neighbour.getNodeID())){
-								if(it.hasNext()){
-									nodeIndex++;
-								}else{
-									it = node.getNeighbours().iterator();
-								}
-							}else{
-								alreadyTold.add(neighbour.getNodeID());
-								break;
-							}
-						}
+					Node neighbour = it.next();
+					if(nodeIndex-- == 0){
+						alreadyTold.add(neighbour.getNodeID());
+						break;
+					}
 				}
 			}
 			for (Iterator<Node> it = node.getNeighbours().iterator(); it.hasNext(); ) {
@@ -59,7 +50,7 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 		return toldRumor;
 	}
 
-	public RandomAlgorithm(Node node, int n, double diameter, int maxDegree){
+	public Random2Algorithm(Node node, int n, double diameter, int maxDegree){
 		this.node = node;
 		this.n = (int) Math.round(Math.pow(Math.log10(n),2));
 		if(this.n>node.getNeighbours().size()){
@@ -74,7 +65,7 @@ public class RandomAlgorithm implements IChoosingAlgorithm {
 	 * @return the alreadyTold
 	 */
 	public List<String> getAlreadyTold() {
-		return alreadyTold;
+		return new ArrayList<String>();
 	}
 	
 }

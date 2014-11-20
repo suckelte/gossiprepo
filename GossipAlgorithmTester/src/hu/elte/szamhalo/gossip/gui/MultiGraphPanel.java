@@ -11,14 +11,13 @@ import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
@@ -60,14 +59,27 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 	
 	private JMenu stepMenu1;
 	private JMenu stepMenu2;
+	
+	private Integer stepCount1 = 0;
+
+	private int threadReadyNumber1;
+	
+	private Integer stepCount2 = 0;
+
+	private int threadReadyNumber2;
+	
+
+	private Boolean done1 = false;
+	
+	private Boolean done2 = false;
 
 	private MultiGraphPanel(){
 		this.graph1 = null;
 		this.graph2 = null;
 		this.setTitle("Gossip algoritmus tesztelõ program");
         this.setLayout(new BorderLayout());
-        this.setSize(1500,1000);
-        this.setExtendedState(Frame.MAXIMIZED_BOTH);
+        this.setSize(1500,920);
+//        this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.setVisible(true);
         
         JMenuBar menuBar = new JMenuBar();
@@ -130,12 +142,13 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 			graph1 = GraphGenerator.getComplexGraph(inputvalue);
 			graph2 = GraphGenerator.getComplexGraph(inputvalue);
 		}
-		GraphUtil.setChoosingAlgorithm(graph1, cae);
-		GraphUtil.setChoosingAlgorithm(graph2, cae2);
-		rumor1 = GraphUtil.setRandomRumor(graph1);
-		rumor2 = GraphUtil.setRandomRumor(graph2);
-		graphView1 = new GraphView(graph1,900,900,le);
-		graphView2 = new GraphView(graph2,900,900,le);
+		rumor1 = GraphUtil.setN1Rumor(graph1);
+		rumor2 = GraphUtil.setN1Rumor(graph2);
+		graphView1 = new GraphView(graph1,750,750,le);
+		graphView2 = new GraphView(graph2,750,750,le);
+
+		GraphUtil.setChoosingAlgorithm(graph1, cae,graphView1.getDiameter());
+		GraphUtil.setChoosingAlgorithm(graph2, cae2,graphView2.getDiameter());
 		
 		BorderLayout borderLayout = new BorderLayout();
 		JPanel multipanel = new JPanel(borderLayout);
@@ -144,7 +157,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		multipanel.add(graphView1.getVisualizationViewer(), BorderLayout.WEST);
 		multipanel.add(graphView2.getVisualizationViewer(), BorderLayout.EAST);
 		
-		this.getContentPane().add(multipanel,BorderLayout.NORTH);
+		this.getContentPane().add(multipanel,BorderLayout.SOUTH);
 		
 		controlPanel = new ControlPanel(this);
 		
@@ -152,7 +165,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
         cp.add(new JLabel(""));
         cp.add(controlPanel);
         cp.add(new JLabel(""));
-		this.getContentPane().add(cp,BorderLayout.SOUTH);
+		this.getContentPane().add(cp,BorderLayout.NORTH);
 		
 //		this.getContentPane().add(controlPanel);
 		
@@ -323,101 +336,90 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		try {
 			Thread.sleep(TimeUnit.SECONDS.toMillis(2));
 		} catch (InterruptedException e1) {}
-		boolean done1 = false;
-		boolean done2 = false;
 		int step = 0;
-		int stepCount1 = 0;
-		int stepCount2 = 0;
 		while(true){
 			if(nextStep-- > 0){
 				step++;
-				if(!done1){
+				controlPanel.startSimulationButton.setEnabled(false);
+				controlPanel.step1SimulationButton.setEnabled(false);
+				step++;
+				if(!getDone1()){
+					controlPanel.startSimulationButton.setEnabled(false);
+					controlPanel.step1SimulationButton.setEnabled(false);
+		        	Set<Thread> threadSet = new HashSet<Thread>(); 
 		        	for (Iterator<Node> it = graph1.iterator(); it.hasNext(); ) {
-		        		Node node = it.next();
-		        		stepCount1 += node.getActiveAlgorithm().step();
+		        		final Node node = it.next();
+		        		threadSet.add(new Thread(new Runnable() {
+							@Override
+							public void run() {
+								setStepCount1(node.getActiveAlgorithm().step(graphView1) + getStepCount1());
+								setThreadReadyNumber1();
+							}
+						}));
 		        	}
-		        	for (Iterator<Node> it = graph1.iterator(); it.hasNext(); ) {
-		        		Node node = it.next();
-		        		if(node.getRumor() != null){
-		        			node.getRumor().setFresh(false);
-		        		}
-		        		if(node.getActiveAlgorithm().isActive()){
-			        		List<String> neighbourIDs = new ArrayList<String>();
-			        		for (Iterator<Node> it2 = node.getNeighbours().iterator(); it2.hasNext(); ) {
-			        			neighbourIDs.add(it2.next().getNodeID());
-			        		}
-			        		if(node.getActiveAlgorithm().getAlreadyTold().containsAll(neighbourIDs)){
-			        			node.getActiveAlgorithm().setActive(false);
-			        		}
-		        		}
+		        	for (Iterator<Thread> it = threadSet.iterator(); it.hasNext(); ) {
+		        		final Thread th = it.next();
+		        		th.start();
 		        	}
-		        	graphView1.repaint();
-		        	Node missingNode = RumorVerifier.verify(rumor1, klocal);
-		        	if(missingNode != null){
-		        		boolean failed = true;
-		        		for (Iterator<Node> it = graph1.iterator(); it.hasNext(); ) {
-			        		Node node = it.next();
-			        		if(node.getActiveAlgorithm().isActive()  && node.getRumor() != null){
-			        			failed = false;
-			        			break;
-			        		}
-		        		}
-		        		if(failed){
-			        		done1 = true;
-		        			controlPanel.setVerifier1Text("Failed!");
-		        		}else{
-		        			controlPanel.setVerifier1Text(missingNode.getNodeID());
-		        		}
-		        	}else{
-		        		done1 = true;
-		        		controlPanel.setVerifier1Text("Kész!(" + stepCount1 + ")");
-		        	}
-		        	stepMenu1.setText("Lépés(gráf 1): " + step);
+		        	
+		        	stepMenu1.setText("Lépés(1): " + step);
 				}
-	        	if(!done2){
-		        	for (Iterator<Node> it = graph2.iterator(); it.hasNext(); ) {
-		        		Node node = it.next();
-		        		stepCount2 += node.getActiveAlgorithm().step();
+	        	if(!getDone2()){
+	        		controlPanel.startSimulationButton.setEnabled(false);
+					controlPanel.step1SimulationButton.setEnabled(false);
+		        	
+					Set<Thread> threadSet = new HashSet<Thread>();
+					for (Iterator<Node> it = graph2.iterator(); it.hasNext(); ) {
+		        		final Node node = it.next();
+		        		threadSet.add(new Thread(new Runnable() {
+							@Override
+							public void run() {
+								setStepCount2(node.getActiveAlgorithm().step(graphView2) + getStepCount2());
+								setThreadReadyNumber2();
+							}
+						}));
 		        	}
-		        	for (Iterator<Node> it = graph2.iterator(); it.hasNext(); ) {
-		        		Node node = it.next();
-		        		if(node.getRumor() != null){
-		        			node.getRumor().setFresh(false);
-		        		}
-		        		if(node.getActiveAlgorithm().isActive()){
-			        		List<String> neighbourIDs = new ArrayList<String>();
-			        		for (Iterator<Node> it2 = node.getNeighbours().iterator(); it2.hasNext(); ) {
-			        			neighbourIDs.add(it2.next().getNodeID());
-			        		}
-			        		if(node.getActiveAlgorithm().getAlreadyTold().containsAll(neighbourIDs)){
-			        			node.getActiveAlgorithm().setActive(false);
-			        		}
-		        		}
+		        	for (Iterator<Thread> it = threadSet.iterator(); it.hasNext(); ) {
+		        		final Thread th = it.next();
+		        		th.start();
 		        	}
-		        	graphView2.repaint();
-		        	Node missingNode = RumorVerifier.verify(rumor2, klocal);
-		        	if(missingNode != null){
-		        		boolean failed = true;
-		        		for (Iterator<Node> it = graph2.iterator(); it.hasNext(); ) {
-			        		Node node = it.next();
-			        		if(node.getActiveAlgorithm().isActive() && node.getRumor() != null){
-			        			failed = false;
-			        			break;
-			        		}
-		        		}
-		        		if(failed){
-			        		done2 = true;
-		        			controlPanel.setVerifier2Text("Failed!");
-		        		}else{
-		        			controlPanel.setVerifier2Text(missingNode.getNodeID());
-		        		}
-		        	}else{
-		        		done2 = true;
-		        		controlPanel.setVerifier2Text("Kész!(" + stepCount2 + ")");
-		        	}
-
-		        	stepMenu2.setText("Lépés(gráf 2): " + step);
+		        	stepMenu2.setText("Lépés(2): " + step);
 	        	}
+	        	
+	        	new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						graphView1.repaint();
+			        	do{
+			        		try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+			        	}while((!getDone1() && graph1.size() != getThreadReadyNumber1()) ||
+ 			        			(!getDone2() && graph2.size() != getThreadReadyNumber2()));
+			        	Node missingNode = RumorVerifier.verify(rumor1, klocal);
+			        	if(missingNode != null){
+			        		controlPanel.setVerifier1Text(missingNode.getNodeID());
+			        	}else{
+			        		setDone1(true);
+			        		controlPanel.setVerifier1Text("Kész!(" + stepCount1 + ")");
+			        	}
+			        	missingNode = RumorVerifier.verify(rumor2, klocal);
+			        	if(missingNode != null){
+			        		controlPanel.setVerifier2Text(missingNode.getNodeID());
+			        	}else{
+			        		setDone2(true);
+			        		controlPanel.setVerifier2Text("Kész!(" + stepCount2 + ")");
+			        	}
+			        	controlPanel.startSimulationButton.setEnabled(true);
+						controlPanel.step1SimulationButton.setEnabled(true);
+						threadReadyNumber1 = 0;
+						threadReadyNumber2 = 0;
+					}
+
+				}).start();
 			}
             try {
 				Thread.sleep(TimeUnit.SECONDS.toMillis(2));
@@ -426,4 +428,53 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		
 	}
 
+	public synchronized Integer getStepCount1() {
+		return stepCount1;
+	}
+
+	public synchronized void setStepCount1(Integer stepCount1) {
+		this.stepCount1 = stepCount1;
+	}
+
+	public synchronized int getThreadReadyNumber1() {
+		return threadReadyNumber1;
+	}
+
+	public synchronized void setThreadReadyNumber1() {
+		this.threadReadyNumber1 += 1;
+	}
+
+	public synchronized Integer getStepCount2() {
+		return stepCount2;
+	}
+
+	public synchronized void setStepCount2(Integer stepCount2) {
+		this.stepCount2 = stepCount2;
+	}
+
+	public synchronized int getThreadReadyNumber2() {
+		return threadReadyNumber2;
+	}
+
+	public synchronized void setThreadReadyNumber2() {
+		this.threadReadyNumber2 += 1;
+	}
+
+	public synchronized Boolean getDone1() {
+		return done1;
+	}
+
+	public synchronized void setDone1(Boolean done1) {
+		this.done1 = done1;
+	}
+
+	public synchronized Boolean getDone2() {
+		return done2;
+	}
+
+	public synchronized void setDone2(Boolean done2) {
+		this.done2 = done2;
+	}
+
 }
+

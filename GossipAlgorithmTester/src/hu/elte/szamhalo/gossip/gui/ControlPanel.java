@@ -2,15 +2,13 @@ package hu.elte.szamhalo.gossip.gui;
 
 import hu.elte.szamhalo.gossip.vo.IGraphPanel;
 
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,6 +24,10 @@ public class ControlPanel extends JPanel implements MouseListener{
 	private JTextField verifierTextField1;
 	private JTextField verifierTextField2;
 	private IGraphPanel graphPanel;
+
+	public Component startSimulationButton;
+
+	public Component step1SimulationButton;
 	
 	
 	public ControlPanel(IGraphPanel graphPanel) {
@@ -37,10 +39,10 @@ public class ControlPanel extends JPanel implements MouseListener{
     	JButton stopSimulationButton = new JButton("Stop");
     	stopSimulationButton.addMouseListener(this);
     	stopSimulationButton.setSize(50, 20);
-		JButton startSimulationButton = new JButton(">");
+		startSimulationButton = new JButton(">");
 		startSimulationButton.addMouseListener(this);
 		startSimulationButton.setSize(50, 20);
-		JButton step1SimulationButton = new JButton(">|");
+		step1SimulationButton = new JButton(">|");
 		step1SimulationButton.addMouseListener(this);
 		step1SimulationButton.setSize(50, 20);
 		

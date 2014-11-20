@@ -14,15 +14,17 @@ public class SimpleRandomAlgorithm implements IChoosingAlgorithm {
 	private boolean active = true;  
 	private Node node;
 	private List<String> alreadyTold = new ArrayList<String>();
+	private int n;
+	private double diameter;
+	private int maxDegree;
 
 	private static Random rand = new Random();
 	
 	@Override
 	public int step() {
 		int toldRumor = 0;
-		if(isActive() && node.getRumor() != null && !node.getRumor().isFresh()){
+		if(node.getRumor() != null){
 			int nodeIndex = rand.nextInt(node.getNeighbours().size());
-			System.out.println(nodeIndex);
 			for (Iterator<Node> it = node.getNeighbours().iterator(); it.hasNext(); ) {
 					if(nodeIndex-- == 0){
 						Node neighbour = it.next();
@@ -36,13 +38,16 @@ public class SimpleRandomAlgorithm implements IChoosingAlgorithm {
 						}
 						if(neighbour.getRumor() == null){
 							Rumor freshRumor = new Rumor();
-							freshRumor.setFresh(true);
 							freshRumor.setSourceNode(node.getRumor().getSourceNode());
 							neighbour.setRumor(freshRumor);
-							neighbour.getActiveAlgorithm().getAlreadyTold().addAll(alreadyTold);
+//							neighbour.getActiveAlgorithm().getAlreadyTold().addAll(alreadyTold);
 							neighbour.getActiveAlgorithm().getAlreadyTold().add(node.getNodeID());
 						}
-						this.active = false;
+						alreadyTold.add(neighbour.getNodeID());
+						if(node.getNeighbours().size() == alreadyTold.size()){
+							this.active = false;
+							return toldRumor;
+						}
 						break;
 				}
 			}
@@ -51,25 +56,18 @@ public class SimpleRandomAlgorithm implements IChoosingAlgorithm {
 		return toldRumor;
 	}
 
-	@Override
-	public boolean isActive() {
-		return this.active;
-	}
-
-	public SimpleRandomAlgorithm(Node node){
-		this.node = node;
-	}
+	public SimpleRandomAlgorithm(Node node, int n, double diameter, int maxDegree){
+			this.node = node;
+			this.n = n;
+			this.diameter = diameter;
+			this.maxDegree = maxDegree;
+		}
 
 	/**
 	 * @return the alreadyTold
 	 */
 	public List<String> getAlreadyTold() {
 		return alreadyTold;
-	}
-
-	@Override
-	public void setActive(boolean active) {
-		this.active = active;
 	}
 	
 }
