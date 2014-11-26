@@ -16,11 +16,13 @@ public class DeterministicAlgorithm implements IChoosingAlgorithm {
 	private int n;
 	private double diameter;
 	private int maxDegree;
+	private boolean isActive = true;
 
 	
 	@Override
 	public int step(GraphView graphView) {
 		int toldRumor = 0;
+		if(isActive){
 			if(alreadyTold.size() != node.getNeighbours().size()){
 				int nodeIndex = alreadyTold.size();
 				for (Iterator<Node> it = node.getNeighbours().iterator(); it.hasNext(); ) {
@@ -38,6 +40,8 @@ public class DeterministicAlgorithm implements IChoosingAlgorithm {
 						Rumor freshRumor = new Rumor();
 						freshRumor.setSourceNode(node.getRumor().getSourceNode());
 						neighbour.setRumor(freshRumor);
+						node.getActiveAlgorithm().getAlreadyTold().clear();
+						node.getActiveAlgorithm().setActive(true);
 					}
 					try {
 						graphView.repaint();
@@ -45,7 +49,11 @@ public class DeterministicAlgorithm implements IChoosingAlgorithm {
 					} catch (InterruptedException e) {}
 				toldRumor++;
 				}
-			}		
+			}	
+			if(alreadyTold.size() == node.getNeighbours().size()){
+				isActive = false;
+			}
+		}
 		return toldRumor;
 	}
 
@@ -63,7 +71,16 @@ public class DeterministicAlgorithm implements IChoosingAlgorithm {
 	 * @return the alreadyTold
 	 */
 	public List<String> getAlreadyTold() {
-		return new ArrayList<String>();
+		return alreadyTold;
 	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	
 	
 }

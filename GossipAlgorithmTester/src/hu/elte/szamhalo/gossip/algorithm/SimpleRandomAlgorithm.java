@@ -75,5 +75,11 @@ public class SimpleRandomAlgorithm implements IChoosingAlgorithm {
 	public List<String> getAlreadyTold() {
 		return alreadyTold;
 	}
+
+	@Override
+	public void setActive(boolean isActive) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

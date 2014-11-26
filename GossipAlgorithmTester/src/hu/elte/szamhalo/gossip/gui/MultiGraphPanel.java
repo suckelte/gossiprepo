@@ -73,6 +73,8 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 	
 	private Boolean done2 = false;
 
+	private Boolean stepEnded = true;
+
 	private MultiGraphPanel(){
 		this.graph1 = null;
 		this.graph2 = null;
@@ -338,7 +340,8 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		} catch (InterruptedException e1) {}
 		int step = 0;
 		while(true){
-			if(nextStep-- > 0){
+			if(nextStep-- > 0 && getStepEnded()){
+				setStepEnded(false);
 				step++;
 				controlPanel.startSimulationButton.setEnabled(false);
 				controlPanel.step1SimulationButton.setEnabled(false);
@@ -418,6 +421,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 						controlPanel.step1SimulationButton.setEnabled(true);
 						threadReadyNumber1 = 0;
 						threadReadyNumber2 = 0;
+						setStepEnded(true);
 					}
 
 				}).start();
@@ -475,6 +479,14 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 
 	public synchronized void setDone2(Boolean done2) {
 		this.done2 = done2;
+	}
+	
+	public synchronized Boolean getStepEnded() {
+		return stepEnded ;
+	}
+
+	public synchronized void setStepEnded(Boolean stepEnded) {
+		this.stepEnded = stepEnded;
 	}
 
 }

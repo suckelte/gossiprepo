@@ -44,4 +44,10 @@ public class FloodAlgorithm implements IChoosingAlgorithm {
 		return new ArrayList<String>();
 		
 	}
+
+	@Override
+	public void setActive(boolean isActive) {
+		// TODO Auto-generated method stub
+		
+	}
 }

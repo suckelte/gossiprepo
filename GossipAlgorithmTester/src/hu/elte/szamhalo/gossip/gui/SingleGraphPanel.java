@@ -56,6 +56,8 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 	private JMenu stepMenu;
 	
 	private Boolean done = false;
+	
+	private Boolean stepEnded = true;
 
 	private int threadReadyNumber = 0;
 	
@@ -213,7 +215,8 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 		} catch (InterruptedException e1) {}
 		int step = 0;
 		while(!getDone()){
-			if(nextStep-- > 0){
+			if(nextStep-- > 0 && getStepEnded()){
+				setStepEnded(false);
 				controlPanel.startSimulationButton.setEnabled(false);
 				controlPanel.step1SimulationButton.setEnabled(false);
 				Set<Thread> threadSet = new HashSet<Thread>(); 
@@ -254,6 +257,7 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 			        	controlPanel.startSimulationButton.setEnabled(true);
 						controlPanel.step1SimulationButton.setEnabled(true);
 						threadReadyNumber = 0;
+						setStepEnded(true);
 					}
 
 				}).start();
@@ -290,6 +294,14 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 
 	public synchronized void setDone(Boolean done) {
 		this.done = done;
+	}
+
+	public synchronized Boolean getStepEnded() {
+		return stepEnded;
+	}
+
+	public synchronized void setStepEnded(Boolean stepEnded) {
+		this.stepEnded = stepEnded;
 	}
 
 }

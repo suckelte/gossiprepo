@@ -1,14 +1,13 @@
 package hu.elte.szamhalo.gossip.algorithm;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-
 import hu.elte.szamhalo.gossip.gui.GraphView;
 import hu.elte.szamhalo.gossip.vo.IChoosingAlgorithm;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class DeterministicTreeAlgorithm implements IChoosingAlgorithm {
 
@@ -17,11 +16,12 @@ public class DeterministicTreeAlgorithm implements IChoosingAlgorithm {
 	private int n;
 	private double diameter;
 	private int maxDegree;
-
+	private boolean isActive = true;
 	
 	@Override
 	public int step(GraphView graphView) {
 		int toldRumor = 0;
+		if(isActive){
 			if(alreadyTold.size() != node.getNeighbours().size()){
 				int nodeIndex = alreadyTold.size();
 				for (Iterator<Node> it = node.getNeighbours().iterator(); it.hasNext(); ) {
@@ -44,6 +44,7 @@ public class DeterministicTreeAlgorithm implements IChoosingAlgorithm {
 						graphView.repaint();
 						Thread.sleep(250);
 					} catch (InterruptedException e) {}
+					toldRumor++;
 				}
 			}
 			Node[] neghbourArray = node.getNeighbours().toArray(new Node[0]);
@@ -54,14 +55,20 @@ public class DeterministicTreeAlgorithm implements IChoosingAlgorithm {
 						Rumor freshRumor = new Rumor();
 						freshRumor.setSourceNode(node.getRumor().getSourceNode());
 						neighbour.setRumor(freshRumor);
+						node.getActiveAlgorithm().getAlreadyTold().clear();
+						node.getActiveAlgorithm().setActive(true);
 					}
 					try {
 						graphView.repaint();
 						Thread.sleep(500);
 					} catch (InterruptedException e) {}
-				toldRumor++;
+					toldRumor++;
 				}
 			}
+			if(alreadyTold.size() == node.getNeighbours().size()){
+				isActive = false;
+			}
+		}
 		return toldRumor;
 	}
 
@@ -80,6 +87,12 @@ public class DeterministicTreeAlgorithm implements IChoosingAlgorithm {
 	 */
 	public List<String> getAlreadyTold() {
 		return new ArrayList<String>();
+	}
+
+	@Override
+	public void setActive(boolean isActive) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
