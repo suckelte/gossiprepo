@@ -3,14 +3,13 @@ package hu.elte.szamhalo.gossip.algorithm;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import hu.elte.szamhalo.gossip.gui.GraphView;
 import hu.elte.szamhalo.gossip.vo.IChoosingAlgorithm;
 import hu.elte.szamhalo.gossip.vo.Node;
 import hu.elte.szamhalo.gossip.vo.Rumor;
 
-public class Random3Algorithm implements IChoosingAlgorithm {
+public class DeterministicAlgorithm implements IChoosingAlgorithm {
 
 	private Node node;
 	private List<String> alreadyTold = new ArrayList<String>();
@@ -42,30 +41,15 @@ public class Random3Algorithm implements IChoosingAlgorithm {
 					}
 					try {
 						graphView.repaint();
-						Thread.sleep(500);
-					} catch (InterruptedException e) {}
-				}
-			}
-			Node[] neghbourArray = node.getNeighbours().toArray(new Node[0]);
-			for (int i = neghbourArray.length-1 ; i > -1 ; i--) {
-				Node neighbour = neghbourArray[i];
-				if(alreadyTold.contains(neighbour.getNodeID())){
-					if(node.getRumor() != null && neighbour.getRumor() == null){
-						Rumor freshRumor = new Rumor();
-						freshRumor.setSourceNode(node.getRumor().getSourceNode());
-						neighbour.setRumor(freshRumor);
-					}
-					try {
-						graphView.repaint();
-						Thread.sleep(500);
+						Thread.sleep(250);
 					} catch (InterruptedException e) {}
 				toldRumor++;
 				}
-			}
+			}		
 		return toldRumor;
 	}
 
-	public Random3Algorithm(Node node, int n, double diameter, int maxDegree){
+	public DeterministicAlgorithm(Node node, int n, double diameter, int maxDegree){
 		this.node = node;
 		this.n = (int) Math.round(Math.pow(Math.log10(n),2));
 		if(this.n>node.getNeighbours().size()){
@@ -73,7 +57,6 @@ public class Random3Algorithm implements IChoosingAlgorithm {
 		}
 		this.diameter = diameter;
 		this.maxDegree = maxDegree;
-//		this.n = (int) Math.round(Math.log(n) / Math.log(2));
 	}
 	
 	/**

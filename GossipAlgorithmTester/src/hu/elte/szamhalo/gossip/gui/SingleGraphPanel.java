@@ -103,15 +103,16 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 		rumor = GraphUtil.setN1Rumor(graph);
 		graphView = new GraphView(graph,800,800,le);
 		GraphUtil.setChoosingAlgorithm(graph, cae, graphView.getDiameter());
-		this.getContentPane().add(graphView.getVisualizationViewer(),BorderLayout.SOUTH);
+		
 		controlPanel = new ControlPanel(this);
         
         JPanel cp = new JPanel(new GridLayout(1, 3));
         cp.add(new JLabel(""));
         cp.add(controlPanel);
         cp.add(new JLabel(""));
+        
 		this.getContentPane().add(cp,BorderLayout.NORTH);
-		
+		this.getContentPane().add(graphView.getVisualizationViewer(),BorderLayout.SOUTH);
 		new Thread(this).start();
 	}
 
@@ -249,6 +250,7 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 			        		setDone(true);
 			        		controlPanel.setVerifier1Text("Kész!(" + stepCount + ")");
 			        	}
+			        	
 			        	controlPanel.startSimulationButton.setEnabled(true);
 						controlPanel.step1SimulationButton.setEnabled(true);
 						threadReadyNumber = 0;
@@ -257,9 +259,11 @@ public class SingleGraphPanel extends JFrame implements MouseListener, Runnable,
 				}).start();
 	        	stepMenu.setText("Lépés: " + ++step);
 			}
-            try {
-				Thread.sleep(TimeUnit.SECONDS.toMillis(2));
-			} catch (InterruptedException e) {}
+			if(nextStep > 10){
+	            try {
+					Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+				} catch (InterruptedException e) {}
+			}
         }
 		
 	}

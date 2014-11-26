@@ -26,7 +26,7 @@ public class FloodAlgorithm implements IChoosingAlgorithm {
 			}
 			try {
 				graphView.repaint();
-				Thread.sleep(400);
+				Thread.sleep(250);
 			} catch (InterruptedException e) {}
 		}
 		return node.getNeighbours().size();

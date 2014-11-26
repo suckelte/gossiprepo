@@ -47,8 +47,7 @@ public class MainMenuFrame extends JFrame {
         JRadioButton multiButton = new JRadioButton("Összehasonlító panel");
         multiButton.setActionCommand("2");
         singleButton.setSelected(true);
-
-        //Group the radio buttons.
+        
         group = new ButtonGroup();
         group.add(singleButton);
         group.add(multiButton);
@@ -59,7 +58,6 @@ public class MainMenuFrame extends JFrame {
         generateButton.setActionCommand("2");
         fileButton.setSelected(true);
 
-        //Group the radio buttons.
         group2 = new ButtonGroup();
         group2.add(fileButton);
         group2.add(generateButton);

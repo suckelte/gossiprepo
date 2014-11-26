@@ -157,7 +157,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		multipanel.add(graphView1.getVisualizationViewer(), BorderLayout.WEST);
 		multipanel.add(graphView2.getVisualizationViewer(), BorderLayout.EAST);
 		
-		this.getContentPane().add(multipanel,BorderLayout.SOUTH);
+		
 		
 		controlPanel = new ControlPanel(this);
 		
@@ -166,7 +166,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
         cp.add(controlPanel);
         cp.add(new JLabel(""));
 		this.getContentPane().add(cp,BorderLayout.NORTH);
-		
+		this.getContentPane().add(multipanel,BorderLayout.SOUTH);
 //		this.getContentPane().add(controlPanel);
 		
 		new Thread(this).start();
@@ -393,7 +393,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 						graphView1.repaint();
 			        	do{
 			        		try {
-								Thread.sleep(1000);
+								Thread.sleep(200);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -413,6 +413,7 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 			        		setDone2(true);
 			        		controlPanel.setVerifier2Text("Kész!(" + stepCount2 + ")");
 			        	}
+			        	
 			        	controlPanel.startSimulationButton.setEnabled(true);
 						controlPanel.step1SimulationButton.setEnabled(true);
 						threadReadyNumber1 = 0;

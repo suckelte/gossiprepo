@@ -50,22 +50,16 @@ public class ControlPanel extends JPanel implements MouseListener{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.anchor = GridBagConstraints.WEST;
         add(stopSimulationButton, gbc);
 
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.anchor = GridBagConstraints.CENTER;
         add(step1SimulationButton, gbc);
 
                 
         gbc.gridx = 2;
         gbc.gridy = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.anchor = GridBagConstraints.EAST;
         add(startSimulationButton, gbc);
 		
 		verifierTextField1 = new JTextField("", 40);

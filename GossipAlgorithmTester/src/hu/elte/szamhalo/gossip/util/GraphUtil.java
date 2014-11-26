@@ -1,9 +1,9 @@
 package hu.elte.szamhalo.gossip.util;
 
 import hu.elte.szamhalo.gossip.algorithm.FloodAlgorithm;
-import hu.elte.szamhalo.gossip.algorithm.Random2Algorithm;
-import hu.elte.szamhalo.gossip.algorithm.Random3Algorithm;
-import hu.elte.szamhalo.gossip.algorithm.RandomAlgorithm;
+import hu.elte.szamhalo.gossip.algorithm.DeterministicAlgorithm;
+import hu.elte.szamhalo.gossip.algorithm.DeterministicTreeAlgorithm;
+import hu.elte.szamhalo.gossip.algorithm.SimpleRandomAlgorithm;
 import hu.elte.szamhalo.gossip.vo.ChoosingAlgorithmEnum;
 import hu.elte.szamhalo.gossip.vo.IChoosingAlgorithm;
 import hu.elte.szamhalo.gossip.vo.Node;
@@ -59,13 +59,13 @@ public class GraphUtil {
 					activeAlgorithm = new FloodAlgorithm(node,graph.size(),diameter,maxDegree);
 					break;
 				case RANDOM:
-					activeAlgorithm = new RandomAlgorithm(node,graph.size(),diameter,maxDegree);
+					activeAlgorithm = new SimpleRandomAlgorithm(node,graph.size(),diameter,maxDegree);
 					break;
 			case SIMPLERANDOM:
-				activeAlgorithm = new Random2Algorithm(node,graph.size(),diameter,maxDegree);
+				activeAlgorithm = new DeterministicAlgorithm(node,graph.size(),diameter,maxDegree);
 				break;
 			case SIMPLERANDOM2:
-				activeAlgorithm = new Random3Algorithm(node,graph.size(),diameter,maxDegree);
+				activeAlgorithm = new DeterministicTreeAlgorithm(node,graph.size(),diameter,maxDegree);
 				break;
 			default:
 				break;
