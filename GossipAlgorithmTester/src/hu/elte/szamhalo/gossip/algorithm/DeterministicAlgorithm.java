@@ -40,8 +40,8 @@ public class DeterministicAlgorithm implements IChoosingAlgorithm {
 						Rumor freshRumor = new Rumor();
 						freshRumor.setSourceNode(node.getRumor().getSourceNode());
 						neighbour.setRumor(freshRumor);
-						node.getActiveAlgorithm().getAlreadyTold().clear();
-						node.getActiveAlgorithm().setActive(true);
+						neighbour.getActiveAlgorithm().getAlreadyTold().clear();
+						neighbour.getActiveAlgorithm().setActive(true);
 					}
 					try {
 						graphView.repaint();

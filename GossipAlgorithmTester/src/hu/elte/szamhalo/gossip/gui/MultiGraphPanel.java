@@ -340,12 +340,11 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		} catch (InterruptedException e1) {}
 		int step = 0;
 		while(true){
-			if(nextStep-- > 0 && getStepEnded()){
+			if(nextStep-- > 0 && getStepEnded() && (!getDone2() || !getDone1())){
 				setStepEnded(false);
 				step++;
 				controlPanel.startSimulationButton.setEnabled(false);
 				controlPanel.step1SimulationButton.setEnabled(false);
-				step++;
 				if(!getDone1()){
 					controlPanel.startSimulationButton.setEnabled(false);
 					controlPanel.step1SimulationButton.setEnabled(false);
@@ -388,7 +387,6 @@ public class MultiGraphPanel extends JFrame  implements MouseListener, Runnable,
 		        	}
 		        	stepMenu2.setText("Lépés(2): " + step);
 	        	}
-	        	
 	        	new Thread(new Runnable() {
 					
 					@Override
